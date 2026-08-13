@@ -378,36 +378,6 @@
   .fact dd { margin: 0; }
   .fact dd small { display: block; color: var(--muted); font-size: var(--fs-small); }
 
-  /* ── 연락 ─────────────────────────────────────────── */
-  .contact-card {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    box-shadow: var(--shadow);
-    padding: clamp(1.75rem, 4vw, 2.75rem);
-  }
-  .contact-card p { margin: 0 0 1.5rem; color: var(--muted); max-width: 46ch; }
-  .contact-list { margin: 0; padding: 0; list-style: none; display: grid; gap: .1rem; }
-  .contact-list a, .contact-list span {
-    display: grid;
-    grid-template-columns: 5.5rem minmax(0, 1fr);
-    gap: 1rem;
-    padding: .55rem 0;
-    text-decoration: none;
-    border-bottom: 1px solid var(--line);
-    font-size: var(--fs-small);
-    transition: color .2s ease;
-  }
-  .contact-list a:hover { color: var(--accent); }
-  .contact-list b {
-    font-family: var(--mono);
-    font-weight: 400;
-    font-size: var(--fs-label);
-    letter-spacing: .16em;
-    text-transform: uppercase;
-    color: var(--faint);
-  }
-
   footer {
     margin-top: var(--band);
     padding-top: 1.25rem;
@@ -624,7 +594,6 @@
       <a href="#career"><i>04</i><span>경력</span></a>
       <a href="#record"><i>05</i><span>학력 · 수상</span></a>
       <a href="#play"><i>06</i><span>놀이</span></a>
-      <a href="#contact"><i>07</i><span>연락</span></a>
     </nav>
 
     <button class="theme-toggle" type="button" id="themeToggle" aria-label="밝은 화면과 어두운 화면 전환">DARK</button>
@@ -649,7 +618,6 @@
       <ul class="hero-meta">
         <li><b>직무</b><span class="ph">직무 / 역할</span></li>
         <li><b>지역</b><span class="ph">서울</span></li>
-        <li><b>메일</b><a href="mailto:angela250184@gmail.com">angela250184@gmail.com</a></li>
       </ul>
     </header>
 
@@ -874,28 +842,10 @@
       </div>
     </section>
 
-    <!-- ▼ 연락 ──────────────────────────────────── -->
-    <section id="contact">
-      <div class="sec-head">
-        <h2>연락</h2>
-        <span>07 / Contact</span>
-      </div>
-      <div class="contact-card">
-        <p>함께 일할 기회나 궁금한 점이 있다면 편하게 연락 주세요.</p>
-        <ul class="contact-list">
-          <li><a href="mailto:angela250184@gmail.com"><b>Email</b><span>angela250184@gmail.com</span></a></li>
-          <!-- 수정: 아래 항목의 주소를 채우거나, 없으면 줄 전체를 지우세요 -->
-          <li><span><b>Phone</b><span class="ph">010-0000-0000</span></span></li>
-          <li><span><b>GitHub</b><span class="ph">github.com/아이디</span></span></li>
-          <li><span><b>LinkedIn</b><span class="ph">linkedin.com/in/아이디</span></span></li>
-        </ul>
-      </div>
-
-      <footer>
-        <span>공혜준 · Portfolio</span>
-        <span>Last updated 2026.08</span>
-      </footer>
-    </section>
+    <footer>
+      <span>공혜준 · Portfolio</span>
+      <span>Last updated 2026.08</span>
+    </footer>
 
   </main>
 </div>
