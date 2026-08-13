@@ -1,0 +1,15 @@
+# 환경 변수 · 비밀 값
+.env
+.env.*
+*.local
+
+# 에디터 · OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# 로그 · 임시 파일
+*.log
+tmp/

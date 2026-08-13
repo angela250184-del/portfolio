@@ -1,0 +1,1498 @@
+<title>공혜준 포트폴리오</title>
+
+<style>
+  /* ── 토큰: 라이트 (기본) ───────────────────────────── */
+  :root {
+    --ground:   #F1F4F2;
+    --surface:  #FBFCFB;
+    --ink:      #14201C;
+    --muted:    #5D6B65;
+    --faint:    #8A9691;
+    --line:     #D6DEDA;
+    --accent:   #0F6A56;
+    --accent-2: #C9E0D7;
+    --shadow:   0 1px 2px rgba(20, 32, 28, .05), 0 8px 24px -16px rgba(20, 32, 28, .3);
+
+    --serif: Georgia, "Nanum Myeongjo", AppleMyungjo, Batang, serif;
+    --sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+            "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    --mono: "JetBrains Mono", Consolas, "D2Coding", ui-monospace, SFMono-Regular, monospace;
+
+    --fs-display: clamp(3.25rem, 11vw, 7rem);
+    --fs-h2:      clamp(1.35rem, 2.6vw, 1.75rem);
+    --fs-lead:    clamp(1.05rem, 1.9vw, 1.3rem);
+    --fs-body:    1rem;
+    --fs-small:   .875rem;
+    --fs-label:   .7rem;
+
+    --gap: clamp(1.25rem, 4vw, 3.5rem);
+    --band: clamp(3.5rem, 9vw, 6.5rem);
+  }
+
+  /* ── 토큰: 다크 (OS 설정) ──────────────────────────── */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:   #0D1412;
+      --surface:  #141D1A;
+      --ink:      #E7EDEA;
+      --muted:    #96A39D;
+      --faint:    #6D7A75;
+      --line:     #253430;
+      --accent:   #52CFAC;
+      --accent-2: #16352C;
+      --shadow:   0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .9);
+    }
+  }
+
+  /* ── 토큰: 다크 (명시 선택) ────────────────────────── */
+  :root[data-theme="dark"] {
+    --ground:   #0D1412;
+    --surface:  #141D1A;
+    --ink:      #E7EDEA;
+    --muted:    #96A39D;
+    --faint:    #6D7A75;
+    --line:     #253430;
+    --accent:   #52CFAC;
+    --accent-2: #16352C;
+    --shadow:   0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .9);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: var(--fs-body);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
+  }
+
+  a { color: inherit; }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* ── 뼈대 ─────────────────────────────────────────── */
+  .shell {
+    max-width: 74rem;
+    margin: 0 auto;
+    padding: 0 var(--gap) var(--band);
+    display: grid;
+    grid-template-columns: 13rem minmax(0, 1fr);
+    column-gap: clamp(2rem, 6vw, 5rem);
+    align-items: start;
+  }
+
+  /* ── 좌측 색인 레일 ───────────────────────────────── */
+  .rail {
+    position: sticky;
+    top: 0;
+    padding: var(--band) 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .rail-mark {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--faint);
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+  }
+  .rail-mark b { color: var(--accent); font-weight: 500; }
+
+  .nav { display: flex; flex-direction: column; gap: .1rem; }
+
+  .nav a {
+    display: grid;
+    grid-template-columns: 1.6rem 1fr;
+    align-items: baseline;
+    gap: .25rem;
+    padding: .3rem 0;
+    text-decoration: none;
+    font-size: var(--fs-small);
+    color: var(--muted);
+    transition: color .2s ease;
+  }
+  .nav a i {
+    font-family: var(--mono);
+    font-style: normal;
+    font-size: var(--fs-label);
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+    transition: color .2s ease;
+  }
+  .nav a:hover { color: var(--ink); }
+  .nav a[aria-current="true"] { color: var(--accent); }
+  .nav a[aria-current="true"] i { color: var(--accent); }
+
+  .theme-toggle {
+    align-self: flex-start;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .12em;
+    padding: .4rem .8rem;
+    cursor: pointer;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── 본문 열 ──────────────────────────────────────── */
+  .main { min-width: 0; }
+
+  section { padding: var(--band) 0 0; scroll-margin-top: 2rem; }
+  section:first-child { padding-top: var(--band); }
+
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: .9rem;
+    margin: 0 0 2rem;
+    padding-bottom: .9rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .sec-head h2 {
+    font-family: var(--serif);
+    font-size: var(--fs-h2);
+    font-weight: 400;
+    letter-spacing: -.01em;
+    margin: 0;
+  }
+  .sec-head span {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-left: auto;
+  }
+
+  /* ── 표제부 ───────────────────────────────────────── */
+  .hero { padding-top: var(--band); }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 1.5rem;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: var(--fs-display);
+    font-weight: 400;
+    line-height: .95;
+    letter-spacing: -.03em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .hero h1 em {
+    display: block;
+    font-family: var(--mono);
+    font-style: normal;
+    font-size: clamp(.75rem, 1.6vw, .95rem);
+    letter-spacing: .32em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-top: 1.25rem;
+  }
+
+  .hero-lead {
+    font-size: var(--fs-lead);
+    line-height: 1.55;
+    color: var(--muted);
+    max-width: 34ch;
+    margin: 2.25rem 0 0;
+    text-wrap: pretty;
+  }
+
+  .hero-meta {
+    margin: 2.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 2rem;
+    font-family: var(--mono);
+    font-size: var(--fs-small);
+  }
+  .hero-meta li { display: flex; gap: .6rem; align-items: baseline; }
+  .hero-meta b {
+    font-weight: 400;
+    font-size: var(--fs-label);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .hero-meta a { text-decoration-color: var(--line); text-underline-offset: 3px; }
+  .hero-meta a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+
+  /* ── 본문 단락 ────────────────────────────────────── */
+  .prose p { max-width: 62ch; margin: 0 0 1.1rem; text-wrap: pretty; }
+  .prose p:last-child { margin-bottom: 0; }
+
+  /* ── 역량 ─────────────────────────────────────────── */
+  .skills { display: grid; gap: 1.75rem; }
+  @media (min-width: 40rem) { .skills { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  .skill-group h3 {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 .85rem;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0; padding: 0; list-style: none; }
+  .chips li {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 999px;
+    padding: .2rem .7rem;
+    font-size: var(--fs-small);
+    color: var(--muted);
+  }
+
+  /* ── 작업 색인 ────────────────────────────────────── */
+  .works { border-top: 1px solid var(--line); }
+
+  .work {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: .25rem 1.5rem;
+    padding: 1.5rem .75rem 1.5rem 0;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    transition: background .25s ease, padding-left .25s ease;
+  }
+  .work::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 2px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform .3s ease;
+  }
+  .work:hover { background: var(--surface); padding-left: 1rem; }
+  .work:hover::before { transform: scaleY(1); }
+
+  .work-year {
+    font-family: var(--mono);
+    font-size: var(--fs-small);
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+    padding-top: .2rem;
+  }
+  .work-title {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin: 0;
+    letter-spacing: -.01em;
+  }
+  .work-role {
+    grid-column: 2;
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: .35rem 0 .55rem;
+  }
+  .work-desc { grid-column: 2; margin: 0; color: var(--muted); font-size: var(--fs-small); max-width: 58ch; }
+  .work-tags {
+    grid-column: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem .9rem;
+    margin: .8rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .1em;
+    color: var(--faint);
+  }
+
+  /* ── 경력 연표 ────────────────────────────────────── */
+  .timeline { margin: 0; padding: 0 0 0 1.5rem; list-style: none; border-left: 1px solid var(--line); }
+  .timeline li { position: relative; padding: 0 0 2.25rem 1.5rem; }
+  .timeline li:last-child { padding-bottom: 0; }
+  .timeline li::before {
+    content: "";
+    position: absolute;
+    left: -1.53rem;
+    top: .55rem;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ground);
+    border: 1.5px solid var(--accent);
+  }
+  .timeline .when {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .14em;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .timeline h3 { font-size: 1.05rem; font-weight: 600; margin: .3rem 0 .1rem; }
+  .timeline .where { color: var(--accent); font-size: var(--fs-small); }
+  .timeline p { margin: .6rem 0 0; color: var(--muted); font-size: var(--fs-small); max-width: 58ch; }
+
+  /* ── 학력·수상 ────────────────────────────────────── */
+  .facts { margin: 0; display: grid; gap: 0; }
+  .fact {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    gap: .25rem 1.5rem;
+    padding: .95rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .fact:first-child { border-top: 1px solid var(--line); }
+  .fact dt {
+    font-family: var(--mono);
+    font-size: var(--fs-small);
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .fact dd { margin: 0; }
+  .fact dd small { display: block; color: var(--muted); font-size: var(--fs-small); }
+
+  /* ── 연락 ─────────────────────────────────────────── */
+  .contact-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    padding: clamp(1.75rem, 4vw, 2.75rem);
+  }
+  .contact-card p { margin: 0 0 1.5rem; color: var(--muted); max-width: 46ch; }
+  .contact-list { margin: 0; padding: 0; list-style: none; display: grid; gap: .1rem; }
+  .contact-list a, .contact-list span {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: .55rem 0;
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    font-size: var(--fs-small);
+    transition: color .2s ease;
+  }
+  .contact-list a:hover { color: var(--accent); }
+  .contact-list b {
+    font-family: var(--mono);
+    font-weight: 400;
+    font-size: var(--fs-label);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+
+  footer {
+    margin-top: var(--band);
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--faint);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  /* ── 테트리스 ─────────────────────────────────────── */
+  .game {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    padding: clamp(1.25rem, 3vw, 2rem);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(1.25rem, 3vw, 2.25rem);
+    align-items: start;
+  }
+
+  .board-wrap { position: relative; line-height: 0; }
+
+  .board-wrap canvas#board {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    background: var(--ground);
+    touch-action: none;
+    max-width: 100%;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    gap: .5rem;
+    text-align: center;
+    background: color-mix(in srgb, var(--ground) 88%, transparent);
+    border-radius: 2px;
+    line-height: 1.5;
+  }
+  .overlay[hidden] { display: none; }
+  .overlay strong {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.4rem;
+    letter-spacing: -.01em;
+  }
+  .overlay span {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .game-side { display: grid; gap: 1.5rem; align-content: start; }
+
+  .panel-label {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 .6rem;
+  }
+
+  canvas#next {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    background: var(--ground);
+  }
+
+  .stats { margin: 0; display: grid; gap: 0; }
+  .stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: .45rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .stat:first-child { border-top: 1px solid var(--line); }
+  .stat dt {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .stat dd {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .game-buttons { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .btn {
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    padding: .45rem .9rem;
+    cursor: pointer;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .keys { margin: 0; padding: 0; list-style: none; display: grid; gap: .3rem; }
+  .keys li {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: .75rem;
+    font-size: var(--fs-small);
+    color: var(--muted);
+  }
+  .keys kbd {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .06em;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-bottom-width: 2px;
+    border-radius: 3px;
+    padding: .1rem .35rem;
+    justify-self: start;
+  }
+
+  .touchpad { display: none; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .4rem; }
+  .touchpad .btn { padding: .7rem .3rem; text-align: center; }
+
+  @media (hover: none) and (pointer: coarse) {
+    .touchpad { display: grid; }
+    .keys { display: none; }
+  }
+
+  @media (max-width: 46rem) {
+    .game { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+    .game-side { width: 100%; }
+  }
+
+  /* ── 채워 넣을 자리 ───────────────────────────────── */
+  .ph {
+    color: var(--faint);
+    border-bottom: 1px dashed var(--line);
+    font-style: normal;
+  }
+
+  /* ── 좁은 화면 ────────────────────────────────────── */
+  @media (max-width: 60rem) {
+    .shell { grid-template-columns: minmax(0, 1fr); }
+    .rail {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      flex-direction: row;
+      align-items: center;
+      gap: 1.25rem;
+      padding: .75rem 0;
+      background: var(--ground);
+      border-bottom: 1px solid var(--line);
+      overflow-x: auto;
+    }
+    .rail-mark { display: none; }
+    .nav { flex-direction: row; gap: 1.1rem; }
+    .nav a { grid-template-columns: 1fr; white-space: nowrap; }
+    .nav a i { display: none; }
+    .theme-toggle { margin-left: auto; flex: none; }
+    .hero { padding-top: calc(var(--band) * .6); }
+    .work { grid-template-columns: minmax(0, 1fr); }
+    .work-role, .work-desc, .work-tags { grid-column: 1; }
+    .fact { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+
+  /* ── 인쇄 ─────────────────────────────────────────── */
+  @media print {
+    .rail, .theme-toggle { display: none; }
+    .shell { grid-template-columns: minmax(0, 1fr); max-width: none; padding: 0; }
+    section { padding-top: 2rem; break-inside: avoid; }
+    .work, .timeline li { break-inside: avoid; }
+  }
+</style>
+
+<div class="shell">
+  <aside class="rail">
+    <div class="rail-mark">
+      <span>Portfolio</span>
+      <b>공혜준</b>
+    </div>
+
+    <nav class="nav" aria-label="섹션 이동">
+      <a href="#about"><i>01</i><span>소개</span></a>
+      <a href="#skills"><i>02</i><span>역량</span></a>
+      <a href="#works"><i>03</i><span>작업</span></a>
+      <a href="#career"><i>04</i><span>경력</span></a>
+      <a href="#record"><i>05</i><span>학력 · 수상</span></a>
+      <a href="#play"><i>06</i><span>놀이</span></a>
+      <a href="#contact"><i>07</i><span>연락</span></a>
+    </nav>
+
+    <button class="theme-toggle" type="button" id="themeToggle" aria-label="밝은 화면과 어두운 화면 전환">DARK</button>
+  </aside>
+
+  <main class="main">
+
+    <!-- ▼ 표제부 ────────────────────────────────── -->
+    <header class="hero">
+      <p class="hero-eyebrow">Portfolio · 2026</p>
+      <h1>
+        공혜준
+        <em>Kong Hyejun</em>
+      </h1>
+
+      <!-- 수정: 한 줄 소개 -->
+      <p class="hero-lead">
+        <span class="ph">한 줄로 자신을 설명하는 문장을 적어주세요.</span>
+        어떤 일을 하고, 무엇을 잘하며, 어떤 문제를 푸는 사람인지 담으면 좋습니다.
+      </p>
+
+      <ul class="hero-meta">
+        <li><b>직무</b><span class="ph">직무 / 역할</span></li>
+        <li><b>지역</b><span class="ph">서울</span></li>
+        <li><b>메일</b><a href="mailto:angela250184@gmail.com">angela250184@gmail.com</a></li>
+      </ul>
+    </header>
+
+    <!-- ▼ 소개 ──────────────────────────────────── -->
+    <section id="about">
+      <div class="sec-head">
+        <h2>소개</h2>
+        <span>01 / About</span>
+      </div>
+      <div class="prose">
+        <!-- 수정: 아래 두 단락을 본인 이야기로 교체 -->
+        <p class="ph">
+          어떤 일을 해왔는지, 무엇에 관심이 있는지 3~4문장으로 적어주세요.
+          경력 요약과 지금 하고 있는 일을 먼저 쓰면 읽는 사람이 맥락을 빨리 잡습니다.
+        </p>
+        <p class="ph">
+          두 번째 단락에는 일하는 방식이나 강점을 적어주세요.
+          추상적인 형용사보다 구체적인 사례 한 줄이 훨씬 잘 읽힙니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- ▼ 역량 ──────────────────────────────────── -->
+    <section id="skills">
+      <div class="sec-head">
+        <h2>역량</h2>
+        <span>02 / Skills</span>
+      </div>
+      <!-- 수정: 그룹 이름과 항목을 본인 것으로 교체 -->
+      <div class="skills">
+        <div class="skill-group">
+          <h3>핵심 역량</h3>
+          <ul class="chips">
+            <li class="ph">항목 1</li>
+            <li class="ph">항목 2</li>
+            <li class="ph">항목 3</li>
+            <li class="ph">항목 4</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>도구 · 기술</h3>
+          <ul class="chips">
+            <li class="ph">도구 1</li>
+            <li class="ph">도구 2</li>
+            <li class="ph">도구 3</li>
+            <li class="ph">도구 4</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>언어</h3>
+          <ul class="chips">
+            <li class="ph">한국어 — 모국어</li>
+            <li class="ph">영어 — 수준</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>자격 · 인증</h3>
+          <ul class="chips">
+            <li class="ph">자격증 1</li>
+            <li class="ph">자격증 2</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ▼ 작업 ──────────────────────────────────── -->
+    <section id="works">
+      <div class="sec-head">
+        <h2>작업</h2>
+        <span>03 / Selected Work</span>
+      </div>
+
+      <!-- 수정: 아래 블록을 복사해 작업 수만큼 늘리세요 -->
+      <div class="works">
+
+        <article class="work">
+          <div class="work-year">2026</div>
+          <h3 class="work-title ph">첫 번째 작업 이름</h3>
+          <p class="work-role ph">맡은 역할</p>
+          <p class="work-desc ph">
+            무엇을 만들었고 왜 만들었는지, 그리고 결과가 어땠는지 두세 문장으로 적어주세요.
+            숫자로 말할 수 있는 성과가 있다면 꼭 넣는 편이 좋습니다.
+          </p>
+          <ul class="work-tags">
+            <li class="ph">키워드</li>
+            <li class="ph">키워드</li>
+            <li class="ph">키워드</li>
+          </ul>
+        </article>
+
+        <article class="work">
+          <div class="work-year">2025</div>
+          <h3 class="work-title ph">두 번째 작업 이름</h3>
+          <p class="work-role ph">맡은 역할</p>
+          <p class="work-desc ph">
+            작업의 배경과 본인이 담당한 부분을 구분해서 쓰면 기여도가 분명하게 전달됩니다.
+          </p>
+          <ul class="work-tags">
+            <li class="ph">키워드</li>
+            <li class="ph">키워드</li>
+          </ul>
+        </article>
+
+        <article class="work">
+          <div class="work-year">2024</div>
+          <h3 class="work-title ph">세 번째 작업 이름</h3>
+          <p class="work-role ph">맡은 역할</p>
+          <p class="work-desc ph">
+            링크가 있다면 제목을 &lt;a href="..."&gt; 로 감싸 연결해 두세요.
+          </p>
+          <ul class="work-tags">
+            <li class="ph">키워드</li>
+            <li class="ph">키워드</li>
+          </ul>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ▼ 경력 ──────────────────────────────────── -->
+    <section id="career">
+      <div class="sec-head">
+        <h2>경력</h2>
+        <span>04 / Experience</span>
+      </div>
+      <!-- 수정: 최근 순으로 정렬 -->
+      <ol class="timeline">
+        <li>
+          <div class="when ph">2024.03 — 현재</div>
+          <h3 class="ph">직책</h3>
+          <div class="where ph">회사 / 조직 이름</div>
+          <p class="ph">담당 업무와 성과를 한두 문장으로 적어주세요.</p>
+        </li>
+        <li>
+          <div class="when ph">2022.01 — 2024.02</div>
+          <h3 class="ph">직책</h3>
+          <div class="where ph">회사 / 조직 이름</div>
+          <p class="ph">담당 업무와 성과를 한두 문장으로 적어주세요.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ▼ 학력 · 수상 ───────────────────────────── -->
+    <section id="record">
+      <div class="sec-head">
+        <h2>학력 · 수상</h2>
+        <span>05 / Record</span>
+      </div>
+      <dl class="facts">
+        <div class="fact">
+          <dt class="ph">2018 — 2022</dt>
+          <dd><span class="ph">학교 이름 · 전공</span><small class="ph">학위 또는 비고</small></dd>
+        </div>
+        <div class="fact">
+          <dt class="ph">2023</dt>
+          <dd><span class="ph">수상 또는 활동 이름</span><small class="ph">주최 기관</small></dd>
+        </div>
+        <div class="fact">
+          <dt class="ph">2021</dt>
+          <dd><span class="ph">수상 또는 활동 이름</span><small class="ph">주최 기관</small></dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- ▼ 놀이 ──────────────────────────────────── -->
+    <section id="play">
+      <div class="sec-head">
+        <h2>놀이</h2>
+        <span>06 / Tetris</span>
+      </div>
+
+      <p class="prose" style="margin:0 0 1.75rem; color:var(--muted); max-width:62ch;">
+        일곱 가지 블록마다 성격이 다른 캐릭터가 살고 있습니다. 쌓인 블록 중 머리가 드러난 칸에만
+        모자와 헤드폰, 왕관이 나타납니다.
+      </p>
+
+      <div class="game">
+        <div class="board-wrap">
+          <canvas id="board" width="300" height="600" aria-label="테트리스 게임판"></canvas>
+          <div class="overlay" id="overlay">
+            <strong id="overlayTitle">테트리스</strong>
+            <span id="overlayText">시작하려면 Enter</span>
+          </div>
+        </div>
+
+        <div class="game-side">
+          <div>
+            <p class="panel-label">다음 블록</p>
+            <canvas id="next" width="120" height="120" aria-hidden="true"></canvas>
+          </div>
+
+          <dl class="stats">
+            <div class="stat"><dt>점수</dt><dd id="score">0</dd></div>
+            <div class="stat"><dt>줄</dt><dd id="lines">0</dd></div>
+            <div class="stat"><dt>레벨</dt><dd id="level">1</dd></div>
+            <div class="stat"><dt>최고</dt><dd id="best">0</dd></div>
+          </dl>
+
+          <div class="game-buttons">
+            <button class="btn" type="button" id="startBtn">시작</button>
+            <button class="btn" type="button" id="pauseBtn">일시정지</button>
+          </div>
+
+          <div>
+            <p class="panel-label">조작</p>
+            <ul class="keys">
+              <li><kbd>← →</kbd><span>좌우 이동</span></li>
+              <li><kbd>↑ / X</kbd><span>회전</span></li>
+              <li><kbd>↓</kbd><span>한 칸 내리기</span></li>
+              <li><kbd>Space</kbd><span>바닥까지 떨어뜨리기</span></li>
+              <li><kbd>P</kbd><span>일시정지</span></li>
+              <li><kbd>Enter</kbd><span>시작 · 다시하기</span></li>
+            </ul>
+            <div class="touchpad">
+              <button class="btn" type="button" data-act="left" aria-label="왼쪽">←</button>
+              <button class="btn" type="button" data-act="rotate" aria-label="회전">↻</button>
+              <button class="btn" type="button" data-act="right" aria-label="오른쪽">→</button>
+              <button class="btn" type="button" data-act="drop" aria-label="떨어뜨리기">↓↓</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ▼ 연락 ──────────────────────────────────── -->
+    <section id="contact">
+      <div class="sec-head">
+        <h2>연락</h2>
+        <span>07 / Contact</span>
+      </div>
+      <div class="contact-card">
+        <p>함께 일할 기회나 궁금한 점이 있다면 편하게 연락 주세요.</p>
+        <ul class="contact-list">
+          <li><a href="mailto:angela250184@gmail.com"><b>Email</b><span>angela250184@gmail.com</span></a></li>
+          <!-- 수정: 아래 항목의 주소를 채우거나, 없으면 줄 전체를 지우세요 -->
+          <li><span><b>Phone</b><span class="ph">010-0000-0000</span></span></li>
+          <li><span><b>GitHub</b><span class="ph">github.com/아이디</span></span></li>
+          <li><span><b>LinkedIn</b><span class="ph">linkedin.com/in/아이디</span></span></li>
+        </ul>
+      </div>
+
+      <footer>
+        <span>공혜준 · Portfolio</span>
+        <span>Last updated 2026.08</span>
+      </footer>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var toggle = document.getElementById('themeToggle');
+
+    function currentIsDark() {
+      var stamped = root.getAttribute('data-theme');
+      if (stamped) return stamped === 'dark';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    function syncLabel() {
+      toggle.textContent = currentIsDark() ? 'LIGHT' : 'DARK';
+    }
+
+    toggle.addEventListener('click', function () {
+      root.setAttribute('data-theme', currentIsDark() ? 'light' : 'dark');
+      syncLabel();
+    });
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncLabel);
+    syncLabel();
+
+    // 현재 보고 있는 섹션을 레일에 표시
+    var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+    var sections = links
+      .map(function (a) { return document.querySelector(a.getAttribute('href')); })
+      .filter(Boolean);
+
+    if ('IntersectionObserver' in window) {
+      var visible = new Set();
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) visible.add(entry.target.id);
+          else visible.delete(entry.target.id);
+        });
+        var active = sections.filter(function (s) { return visible.has(s.id); })[0];
+        links.forEach(function (a) {
+          var on = active && a.getAttribute('href') === '#' + active.id;
+          if (on) a.setAttribute('aria-current', 'true');
+          else a.removeAttribute('aria-current');
+        });
+      }, { rootMargin: '-20% 0px -60% 0px' });
+
+      sections.forEach(function (s) { observer.observe(s); });
+    }
+  })();
+</script>
+
+<script>
+/* ── 테트리스 ────────────────────────────────────────────
+   블록 일곱 종류에 각각 캐릭터를 붙였습니다.
+   얼굴 장식은 위 칸이 비어 있는 "머리" 칸에만 그려집니다. */
+(function () {
+  var COLS = 10, ROWS = 20, CELL = 30;
+
+  // 종류별 색과 장식
+  var PIECES = {
+    I: { color: '#7C5CE6', hat: 'headphones', cells: [[0,1],[1,1],[2,1],[3,1]], size: 4 },
+    J: { color: '#4A8FE7', hat: 'cap',        cells: [[0,0],[0,1],[1,1],[2,1]], size: 3 },
+    L: { color: '#E8903C', hat: 'beanie',     cells: [[2,0],[0,1],[1,1],[2,1]], size: 3 },
+    O: { color: '#E8C64A', hat: 'ribbon',     cells: [[0,0],[1,0],[0,1],[1,1]], size: 2 },
+    S: { color: '#4FB477', hat: 'star',       cells: [[1,0],[2,0],[0,1],[1,1]], size: 3 },
+    T: { color: '#C05CC9', hat: 'crown',      cells: [[1,0],[0,1],[1,1],[2,1]], size: 3 },
+    Z: { color: '#E05C6E', hat: 'glasses',    cells: [[0,0],[1,0],[1,1],[2,1]], size: 3 }
+  };
+  var TYPES = Object.keys(PIECES);
+
+  var board = document.getElementById('board');
+  var next = document.getElementById('next');
+  if (!board || !next) return;
+
+  var bx = board.getContext('2d');
+  var nx = next.getContext('2d');
+
+  var el = {
+    score: document.getElementById('score'),
+    lines: document.getElementById('lines'),
+    level: document.getElementById('level'),
+    best: document.getElementById('best'),
+    overlay: document.getElementById('overlay'),
+    overlayTitle: document.getElementById('overlayTitle'),
+    overlayText: document.getElementById('overlayText'),
+    start: document.getElementById('startBtn'),
+    pause: document.getElementById('pauseBtn')
+  };
+
+  var grid, active, queued, state = 'idle';
+  var score = 0, lines = 0, level = 1, best = readBest();
+  var dropTimer = 0, lastFrame = 0;
+
+  el.best.textContent = best;
+
+  /* ── 화면 대응 ─────────────────────────────── */
+  function fitCanvas(canvas, ctx, w, h) {
+    var dpr = window.devicePixelRatio || 1;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  fitCanvas(board, bx, COLS * CELL, ROWS * CELL);
+  fitCanvas(next, nx, 120, 120);
+
+  function token(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  /* ── 캐릭터 그리기 ─────────────────────────── */
+  function roundRect(ctx, x, y, w, h, r) {
+    if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); return; }
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function shade(hex, amount) {
+    var n = parseInt(hex.slice(1), 16);
+    var r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+    function mix(c) {
+      return Math.round(amount > 0 ? c + (255 - c) * amount : c * (1 + amount));
+    }
+    return 'rgb(' + mix(r) + ',' + mix(g) + ',' + mix(b) + ')';
+  }
+
+  function drawCharacter(ctx, x, y, s, type, showHat) {
+    var p = PIECES[type];
+    var pad = s * 0.06;
+    var w = s - pad * 2;
+    var cx = x + s / 2;
+
+    ctx.save();
+
+    // 몸통
+    roundRect(ctx, x + pad, y + pad, w, w, s * 0.22);
+    var g = ctx.createLinearGradient(0, y, 0, y + s);
+    g.addColorStop(0, shade(p.color, 0.18));
+    g.addColorStop(1, shade(p.color, -0.14));
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.strokeStyle = shade(p.color, -0.35);
+    ctx.lineWidth = Math.max(1, s * 0.035);
+    ctx.stroke();
+
+    var eyeY = y + s * 0.46;
+    var eyeR = Math.max(1, s * 0.075);
+    var eyeDX = s * 0.19;
+
+    // 볼
+    ctx.fillStyle = 'rgba(255,255,255,.22)';
+    ctx.beginPath();
+    ctx.arc(cx - eyeDX * 1.55, eyeY + s * 0.14, s * 0.09, 0, Math.PI * 2);
+    ctx.arc(cx + eyeDX * 1.55, eyeY + s * 0.14, s * 0.09, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 눈
+    ctx.fillStyle = '#1C1630';
+    ctx.beginPath();
+    ctx.arc(cx - eyeDX, eyeY, eyeR, 0, Math.PI * 2);
+    ctx.arc(cx + eyeDX, eyeY, eyeR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.9)';
+    ctx.beginPath();
+    ctx.arc(cx - eyeDX + eyeR * 0.35, eyeY - eyeR * 0.35, eyeR * 0.34, 0, Math.PI * 2);
+    ctx.arc(cx + eyeDX + eyeR * 0.35, eyeY - eyeR * 0.35, eyeR * 0.34, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 입
+    ctx.strokeStyle = '#1C1630';
+    ctx.lineWidth = Math.max(1, s * 0.045);
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(cx, eyeY + s * 0.13, s * 0.1, 0.15 * Math.PI, 0.85 * Math.PI);
+    ctx.stroke();
+
+    if (showHat) drawHat(ctx, p.hat, x, y, s, p.color, cx, eyeY, eyeDX, eyeR);
+
+    ctx.restore();
+  }
+
+  function drawHat(ctx, kind, x, y, s, color, cx, eyeY, eyeDX, eyeR) {
+    var top = y + s * 0.1;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    if (kind === 'headphones') {
+      ctx.strokeStyle = '#2A2340';
+      ctx.lineWidth = Math.max(1.5, s * 0.075);
+      ctx.beginPath();
+      ctx.arc(cx, top + s * 0.16, s * 0.3, Math.PI * 1.08, Math.PI * 1.92);
+      ctx.stroke();
+      ctx.fillStyle = '#2A2340';
+      roundRect(ctx, cx - s * 0.4, top + s * 0.1, s * 0.16, s * 0.22, s * 0.06); ctx.fill();
+      roundRect(ctx, cx + s * 0.24, top + s * 0.1, s * 0.16, s * 0.22, s * 0.06); ctx.fill();
+
+    } else if (kind === 'cap') {
+      ctx.fillStyle = shade(color, -0.45);
+      ctx.beginPath();
+      ctx.arc(cx, top + s * 0.18, s * 0.28, Math.PI, 0);
+      ctx.closePath(); ctx.fill();
+      roundRect(ctx, cx - s * 0.02, top + s * 0.13, s * 0.42, s * 0.09, s * 0.045);
+      ctx.fill();
+
+    } else if (kind === 'beanie') {
+      ctx.fillStyle = shade(color, -0.4);
+      ctx.beginPath();
+      ctx.arc(cx, top + s * 0.2, s * 0.27, Math.PI, 0);
+      ctx.closePath(); ctx.fill();
+      roundRect(ctx, cx - s * 0.3, top + s * 0.17, s * 0.6, s * 0.09, s * 0.045);
+      ctx.fillStyle = shade(color, 0.35); ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx, top - s * 0.03, s * 0.08, 0, Math.PI * 2);
+      ctx.fill();
+
+    } else if (kind === 'ribbon') {
+      ctx.fillStyle = shade(color, -0.42);
+      ctx.beginPath();
+      ctx.moveTo(cx - s * 0.05, top + s * 0.14);
+      ctx.lineTo(cx - s * 0.32, top + s * 0.02);
+      ctx.lineTo(cx - s * 0.32, top + s * 0.26);
+      ctx.closePath(); ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(cx + s * 0.05, top + s * 0.14);
+      ctx.lineTo(cx + s * 0.32, top + s * 0.02);
+      ctx.lineTo(cx + s * 0.32, top + s * 0.26);
+      ctx.closePath(); ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx, top + s * 0.14, s * 0.075, 0, Math.PI * 2);
+      ctx.fill();
+
+    } else if (kind === 'star') {
+      ctx.fillStyle = '#F5E06A';
+      ctx.strokeStyle = shade(color, -0.4);
+      ctx.lineWidth = Math.max(1, s * 0.03);
+      ctx.beginPath();
+      var R = s * 0.17, r = R * 0.45, sx = cx + s * 0.2, sy = top + s * 0.1;
+      for (var i = 0; i < 10; i++) {
+        var rad = (i % 2 === 0) ? R : r;
+        var a = (Math.PI / 5) * i - Math.PI / 2;
+        var px = sx + Math.cos(a) * rad, py = sy + Math.sin(a) * rad;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+
+    } else if (kind === 'crown') {
+      ctx.fillStyle = '#F0C64B';
+      ctx.strokeStyle = shade(color, -0.45);
+      ctx.lineWidth = Math.max(1, s * 0.03);
+      var w = s * 0.44, h = s * 0.2, bx0 = cx - w / 2, by0 = top + s * 0.24;
+      ctx.beginPath();
+      ctx.moveTo(bx0, by0);
+      ctx.lineTo(bx0, by0 - h);
+      ctx.lineTo(bx0 + w * 0.25, by0 - h * 0.4);
+      ctx.lineTo(cx, by0 - h * 1.25);
+      ctx.lineTo(bx0 + w * 0.75, by0 - h * 0.4);
+      ctx.lineTo(bx0 + w, by0 - h);
+      ctx.lineTo(bx0 + w, by0);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+
+    } else if (kind === 'glasses') {
+      ctx.strokeStyle = '#2A2340';
+      ctx.lineWidth = Math.max(1.2, s * 0.045);
+      ctx.beginPath();
+      ctx.arc(cx - eyeDX, eyeY, eyeR * 1.75, 0, Math.PI * 2);
+      ctx.moveTo(cx + eyeDX + eyeR * 1.75, eyeY);
+      ctx.arc(cx + eyeDX, eyeY, eyeR * 1.75, 0, Math.PI * 2);
+      ctx.moveTo(cx - eyeDX + eyeR * 1.75, eyeY);
+      ctx.lineTo(cx + eyeDX - eyeR * 1.75, eyeY);
+      ctx.stroke();
+    }
+  }
+
+  /* ── 조각 ──────────────────────────────────── */
+  function makePiece(type) {
+    var def = PIECES[type];
+    var n = def.size;
+    var m = [];
+    for (var y = 0; y < n; y++) { m.push(new Array(n).fill(null)); }
+    def.cells.forEach(function (c) { m[c[1]][c[0]] = type; });
+    return { type: type, matrix: m, x: Math.floor((COLS - n) / 2), y: -1 };
+  }
+
+  function randomType() { return TYPES[Math.floor(Math.random() * TYPES.length)]; }
+
+  function rotate(matrix) {
+    var n = matrix.length;
+    var out = [];
+    for (var y = 0; y < n; y++) {
+      out.push(new Array(n).fill(null));
+      for (var x = 0; x < n; x++) out[y][x] = matrix[n - 1 - x][y];
+    }
+    return out;
+  }
+
+  function collides(piece, matrix, offX, offY) {
+    var m = matrix || piece.matrix;
+    var px = piece.x + (offX || 0), py = piece.y + (offY || 0);
+    for (var y = 0; y < m.length; y++) {
+      for (var x = 0; x < m.length; x++) {
+        if (!m[y][x]) continue;
+        var gx = px + x, gy = py + y;
+        if (gx < 0 || gx >= COLS || gy >= ROWS) return true;
+        if (gy >= 0 && grid[gy][gx]) return true;
+      }
+    }
+    return false;
+  }
+
+  /* ── 진행 ──────────────────────────────────── */
+  function reset() {
+    grid = [];
+    for (var y = 0; y < ROWS; y++) grid.push(new Array(COLS).fill(null));
+    score = 0; lines = 0; level = 1; dropTimer = 0;
+    queued = randomType();
+    spawn();
+    updateStats();
+  }
+
+  function spawn() {
+    active = makePiece(queued);
+    queued = randomType();
+    drawNext();
+    if (collides(active)) gameOver();
+  }
+
+  function dropInterval() {
+    return Math.max(90, 800 - (level - 1) * 65);
+  }
+
+  function step() {
+    if (!collides(active, null, 0, 1)) { active.y++; return; }
+    lock();
+  }
+
+  function lock() {
+    for (var y = 0; y < active.matrix.length; y++) {
+      for (var x = 0; x < active.matrix.length; x++) {
+        if (!active.matrix[y][x]) continue;
+        var gy = active.y + y;
+        if (gy < 0) { gameOver(); return; }
+        grid[gy][active.x + x] = active.type;
+      }
+    }
+    clearLines();
+    spawn();
+  }
+
+  function clearLines() {
+    var cleared = 0;
+    for (var y = ROWS - 1; y >= 0; y--) {
+      if (grid[y].every(function (c) { return c; })) {
+        grid.splice(y, 1);
+        grid.unshift(new Array(COLS).fill(null));
+        cleared++;
+        y++;
+      }
+    }
+    if (!cleared) return;
+    var table = [0, 100, 300, 500, 800];
+    score += table[cleared] * level;
+    lines += cleared;
+    level = Math.floor(lines / 10) + 1;
+    updateStats();
+  }
+
+  function updateStats() {
+    el.score.textContent = score;
+    el.lines.textContent = lines;
+    el.level.textContent = level;
+    if (score > best) { best = score; el.best.textContent = best; writeBest(best); }
+  }
+
+  function readBest() {
+    try { return parseInt(localStorage.getItem('tetris.best'), 10) || 0; } catch (e) { return 0; }
+  }
+  function writeBest(v) {
+    try { localStorage.setItem('tetris.best', String(v)); } catch (e) {}
+  }
+
+  function gameOver() {
+    state = 'over';
+    showOverlay('게임 끝', '점수 ' + score + ' · Enter 로 다시하기');
+  }
+
+  function showOverlay(title, text) {
+    el.overlayTitle.textContent = title;
+    el.overlayText.textContent = text;
+    el.overlay.hidden = false;
+  }
+
+  /* ── 렌더 ──────────────────────────────────── */
+  function occupied(x, y) {
+    if (y < 0) return false;
+    if (x < 0 || x >= COLS || y >= ROWS) return false;
+    return !!grid[y][x];
+  }
+
+  function render() {
+    bx.clearRect(0, 0, COLS * CELL, ROWS * CELL);
+
+    bx.fillStyle = token('--ground');
+    bx.fillRect(0, 0, COLS * CELL, ROWS * CELL);
+
+    bx.strokeStyle = token('--line');
+    bx.globalAlpha = 0.55;
+    bx.lineWidth = 1;
+    for (var i = 1; i < COLS; i++) {
+      bx.beginPath(); bx.moveTo(i * CELL + .5, 0); bx.lineTo(i * CELL + .5, ROWS * CELL); bx.stroke();
+    }
+    for (var j = 1; j < ROWS; j++) {
+      bx.beginPath(); bx.moveTo(0, j * CELL + .5); bx.lineTo(COLS * CELL, j * CELL + .5); bx.stroke();
+    }
+    bx.globalAlpha = 1;
+
+    if (!grid) return;
+
+    // 쌓인 블록
+    for (var y = 0; y < ROWS; y++) {
+      for (var x = 0; x < COLS; x++) {
+        var t = grid[y][x];
+        if (t) drawCharacter(bx, x * CELL, y * CELL, CELL, t, !occupied(x, y - 1));
+      }
+    }
+
+    if (!active || state === 'over') return;
+
+    // 착지 위치 미리보기
+    var ghostY = active.y;
+    while (!collides(active, null, 0, ghostY - active.y + 1)) ghostY++;
+    bx.save();
+    bx.globalAlpha = 0.16;
+    bx.fillStyle = PIECES[active.type].color;
+    forEachCell(active.matrix, function (cx, cy) {
+      var gy = ghostY + cy;
+      if (gy >= 0) {
+        roundRect(bx, (active.x + cx) * CELL + 2, gy * CELL + 2, CELL - 4, CELL - 4, CELL * 0.2);
+        bx.fill();
+      }
+    });
+    bx.restore();
+
+    // 현재 조각
+    forEachCell(active.matrix, function (cx, cy) {
+      var gy = active.y + cy;
+      if (gy < 0) return;
+      var above = active.matrix[cy - 1] && active.matrix[cy - 1][cx];
+      drawCharacter(bx, (active.x + cx) * CELL, gy * CELL, CELL, active.type, !above);
+    });
+  }
+
+  function forEachCell(m, fn) {
+    for (var y = 0; y < m.length; y++) {
+      for (var x = 0; x < m.length; x++) if (m[y][x]) fn(x, y);
+    }
+  }
+
+  function drawNext() {
+    nx.clearRect(0, 0, 120, 120);
+    nx.fillStyle = token('--ground');
+    nx.fillRect(0, 0, 120, 120);
+    if (!queued) return;
+
+    var m = makePiece(queued).matrix;
+    var s = 24;
+    var minX = 99, maxX = -1, minY = 99, maxY = -1;
+    forEachCell(m, function (x, y) {
+      if (x < minX) minX = x; if (x > maxX) maxX = x;
+      if (y < minY) minY = y; if (y > maxY) maxY = y;
+    });
+    var offX = (120 - (maxX - minX + 1) * s) / 2 - minX * s;
+    var offY = (120 - (maxY - minY + 1) * s) / 2 - minY * s;
+    forEachCell(m, function (x, y) {
+      var above = m[y - 1] && m[y - 1][x];
+      drawCharacter(nx, offX + x * s, offY + y * s, s, queued, !above);
+    });
+  }
+
+  /* ── 루프 ──────────────────────────────────── */
+  function loop(now) {
+    var dt = now - (lastFrame || now);
+    lastFrame = now;
+    if (state === 'playing') {
+      dropTimer += dt;
+      if (dropTimer >= dropInterval()) { dropTimer = 0; step(); }
+    }
+    render();
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  /* ── 조작 ──────────────────────────────────── */
+  function move(dx) {
+    if (state !== 'playing') return;
+    if (!collides(active, null, dx, 0)) active.x += dx;
+  }
+
+  function softDrop() {
+    if (state !== 'playing') return;
+    dropTimer = 0;
+    step();
+  }
+
+  function hardDrop() {
+    if (state !== 'playing') return;
+    while (!collides(active, null, 0, 1)) active.y++;
+    dropTimer = 0;
+    lock();
+  }
+
+  function turn() {
+    if (state !== 'playing') return;
+    var rotated = rotate(active.matrix);
+    var kicks = [0, -1, 1, -2, 2];
+    for (var i = 0; i < kicks.length; i++) {
+      if (!collides(active, rotated, kicks[i], 0)) {
+        active.x += kicks[i];
+        active.matrix = rotated;
+        return;
+      }
+    }
+  }
+
+  function startGame() {
+    reset();
+    state = 'playing';
+    lastFrame = 0;
+    el.overlay.hidden = true;
+  }
+
+  function togglePause() {
+    if (state === 'playing') {
+      state = 'paused';
+      showOverlay('일시정지', 'P 또는 버튼으로 계속');
+    } else if (state === 'paused') {
+      state = 'playing';
+      el.overlay.hidden = true;
+    }
+  }
+
+  el.start.addEventListener('click', startGame);
+  el.pause.addEventListener('click', togglePause);
+  el.overlay.addEventListener('click', function () {
+    if (state === 'playing') return;
+    if (state === 'paused') togglePause(); else startGame();
+  });
+
+  document.querySelectorAll('.touchpad .btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var act = btn.dataset.act;
+      if (state !== 'playing') { startGame(); return; }
+      if (act === 'left') move(-1);
+      else if (act === 'right') move(1);
+      else if (act === 'rotate') turn();
+      else if (act === 'drop') hardDrop();
+    });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+    if (e.key === 'Enter') {
+      if (state !== 'playing') { e.preventDefault(); startGame(); }
+      return;
+    }
+    if (e.key === 'p' || e.key === 'P') {
+      if (state === 'playing' || state === 'paused') { e.preventDefault(); togglePause(); }
+      return;
+    }
+    if (state !== 'playing') return;
+
+    switch (e.key) {
+      case 'ArrowLeft':  e.preventDefault(); move(-1); break;
+      case 'ArrowRight': e.preventDefault(); move(1); break;
+      case 'ArrowDown':  e.preventDefault(); softDrop(); break;
+      case 'ArrowUp':
+      case 'x':
+      case 'X':          e.preventDefault(); turn(); break;
+      case ' ':          e.preventDefault(); hardDrop(); break;
+    }
+  });
+
+  // 화면 테마가 바뀌면 미리보기도 다시 그리기
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', drawNext);
+  var themeBtn = document.getElementById('themeToggle');
+  if (themeBtn) themeBtn.addEventListener('click', function () { setTimeout(drawNext, 0); });
+
+  reset();
+  state = 'idle';
+  showOverlay('테트리스', '시작하려면 Enter');
+})();
+</script>

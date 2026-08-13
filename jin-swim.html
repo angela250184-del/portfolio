@@ -1,0 +1,1181 @@
+<title>진 SWIM 아카이브</title>
+
+<style>
+  /* ── 토큰: 라이트 ──────────────────────────────────── */
+  :root {
+    --ground:   #EBF0F2;
+    --surface:  #FFFFFF;
+    --sunk:     #DFE7EA;
+    --ink:      #0E2130;
+    --muted:    #566E7C;
+    --faint:    #8298A4;
+    --line:     #CFDBE1;
+    --accent:   #0C6E86;
+    --gold:     #B07A16;
+    --shadow:   0 1px 2px rgba(14, 33, 48, .06), 0 18px 40px -30px rgba(14, 33, 48, .55);
+
+    --sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+            "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    --mono: "JetBrains Mono", Consolas, "D2Coding", ui-monospace, SFMono-Regular, monospace;
+
+    --fs-display: clamp(3.5rem, 15vw, 9rem);
+    --fs-h2:      clamp(1.4rem, 3vw, 2rem);
+    --fs-lead:    clamp(1rem, 1.8vw, 1.2rem);
+    --fs-small:   .875rem;
+    --fs-label:   .68rem;
+
+    --pad: clamp(1.25rem, 5vw, 3rem);
+    --band: clamp(4rem, 10vw, 7.5rem);
+  }
+
+  /* ── 토큰: 다크 (OS) ───────────────────────────────── */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:   #071620;
+      --surface:  #0E2331;
+      --sunk:     #0A1C27;
+      --ink:      #E3EFF4;
+      --muted:    #8FA9B6;
+      --faint:    #63808F;
+      --line:     #1B3849;
+      --accent:   #46C6DF;
+      --gold:     #EDC366;
+      --shadow:   0 1px 2px rgba(0, 0, 0, .5), 0 18px 40px -30px rgba(0, 0, 0, 1);
+    }
+  }
+
+  /* ── 토큰: 다크 (선택) ─────────────────────────────── */
+  :root[data-theme="dark"] {
+    --ground:   #071620;
+    --surface:  #0E2331;
+    --sunk:     #0A1C27;
+    --ink:      #E3EFF4;
+    --muted:    #8FA9B6;
+    --faint:    #63808F;
+    --line:     #1B3849;
+    --accent:   #46C6DF;
+    --gold:     #EDC366;
+    --shadow:   0 1px 2px rgba(0, 0, 0, .5), 0 18px 40px -30px rgba(0, 0, 0, 1);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
+  }
+
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+  .wrap { max-width: 60rem; margin: 0 auto; padding: 0 var(--pad); }
+  .wrap-wide { max-width: 76rem; margin: 0 auto; padding: 0 var(--pad); }
+
+  /* ── 비공식 안내 띠 ────────────────────────────────── */
+  .notice {
+    background: var(--sunk);
+    border-bottom: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+    padding: .6rem var(--pad);
+  }
+
+  /* ── 표제부 ────────────────────────────────────────── */
+  .hero { position: relative; overflow: hidden; padding: var(--band) 0 0; }
+
+  .hero-inner { position: relative; z-index: 1; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 1.25rem;
+  }
+
+  .hero h1 {
+    font-size: var(--fs-display);
+    font-weight: 800;
+    line-height: .85;
+    letter-spacing: -.055em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .hero h1 .ko { display: block; }
+  .hero h1 .en {
+    display: block;
+    font-family: var(--mono);
+    font-size: clamp(.7rem, 2.2vw, 1rem);
+    font-weight: 400;
+    letter-spacing: .42em;
+    color: var(--faint);
+    margin-top: 1.5rem;
+    text-transform: uppercase;
+  }
+
+  .hero-lead {
+    font-size: var(--fs-lead);
+    color: var(--muted);
+    max-width: 40ch;
+    margin: 2rem 0 0;
+    text-wrap: pretty;
+  }
+
+  .hero-canvas {
+    display: block;
+    width: 100%;
+    height: clamp(90px, 16vw, 170px);
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  /* ── 섹션 ──────────────────────────────────────────── */
+  section { padding: var(--band) 0 0; scroll-margin-top: 1.5rem; }
+
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin: 0 0 2rem;
+    padding-bottom: .85rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .sec-head h2 {
+    font-size: var(--fs-h2);
+    font-weight: 700;
+    letter-spacing: -.025em;
+    margin: 0;
+  }
+  .sec-head span {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+
+  /* ── 프로필 ────────────────────────────────────────── */
+  .facts { margin: 0; display: grid; gap: 0; }
+  .fact {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    gap: .2rem 1.5rem;
+    padding: .8rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .fact:first-child { border-top: 1px solid var(--line); }
+  .fact dt {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--faint);
+    padding-top: .2rem;
+  }
+  .fact dd { margin: 0; }
+
+  /* ── 디스코그래피 ──────────────────────────────────── */
+  .disc { border-top: 1px solid var(--line); }
+  .rel {
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr) auto;
+    gap: .3rem 1.5rem;
+    align-items: baseline;
+    padding: 1.15rem .5rem 1.15rem 0;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    transition: background .25s ease, padding-left .25s ease;
+  }
+  .rel::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 2px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform .3s ease;
+  }
+  .rel:hover { background: var(--surface); padding-left: .9rem; }
+  .rel:hover::before { transform: scaleY(1); }
+
+  .rel-date {
+    font-family: var(--mono);
+    font-size: var(--fs-small);
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .rel-title { font-weight: 600; margin: 0; font-size: 1.05rem; }
+  .rel-title small { display: block; font-weight: 400; color: var(--muted); font-size: var(--fs-small); }
+  .rel-kind {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .unverified {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .1em;
+    color: var(--gold);
+    border: 1px dashed var(--gold);
+    border-radius: 3px;
+    padding: 0 .35rem;
+    margin-left: .4rem;
+    vertical-align: middle;
+  }
+
+  .prose p { max-width: 62ch; margin: 0 0 1rem; color: var(--muted); text-wrap: pretty; }
+  .prose p:last-child { margin-bottom: 0; }
+
+  /* ── 게임 ──────────────────────────────────────────── */
+  .game {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+    padding: clamp(1.25rem, 3vw, 2.25rem);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+    align-items: start;
+  }
+
+  .board-wrap { position: relative; line-height: 0; }
+
+  #board {
+    display: block;
+    border: 2px solid var(--line);
+    border-radius: 3px;
+    background: var(--sunk);
+    image-rendering: pixelated;
+    touch-action: none;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    gap: .55rem;
+    text-align: center;
+    padding: 1rem;
+    background: color-mix(in srgb, var(--sunk) 90%, transparent);
+    border-radius: 3px;
+    line-height: 1.5;
+  }
+  .overlay[hidden] { display: none; }
+  .overlay strong {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .overlay span {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .14em;
+    color: var(--muted);
+  }
+
+  .side { display: grid; gap: 1.5rem; align-content: start; }
+
+  .panel-label {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 .6rem;
+  }
+
+  #next {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--sunk);
+    image-rendering: pixelated;
+  }
+
+  .stats { margin: 0; display: grid; gap: 0; }
+  .stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: .4rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .stat:first-child { border-top: 1px solid var(--line); }
+  .stat dt {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .stat dd { margin: 0; font-family: var(--mono); font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+
+  .btn-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .btn {
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    padding: .45rem .9rem;
+    cursor: pointer;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .keys { margin: 0; padding: 0; list-style: none; display: grid; gap: .28rem; }
+  .keys li {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: .75rem;
+    font-size: var(--fs-small);
+    color: var(--muted);
+  }
+  .keys kbd {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-bottom-width: 2px;
+    border-radius: 3px;
+    padding: .08rem .35rem;
+    justify-self: start;
+  }
+
+  .touchpad { display: none; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .4rem; }
+  .touchpad .btn { padding: .75rem .3rem; text-align: center; }
+  @media (hover: none) and (pointer: coarse) {
+    .touchpad { display: grid; }
+    .keys { display: none; }
+  }
+
+  /* ── 캐릭터 도감 ───────────────────────────────────── */
+  .cast {
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+    gap: 1rem;
+  }
+  .cast li {
+    display: grid;
+    justify-items: center;
+    gap: .5rem;
+    text-align: center;
+    padding: 1rem .5rem;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    background: var(--surface);
+  }
+  .cast canvas { image-rendering: pixelated; display: block; }
+  .cast b { font-size: var(--fs-small); font-weight: 600; }
+  .cast small {
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .14em;
+    color: var(--faint);
+  }
+
+  /* ── 마무리 ────────────────────────────────────────── */
+  footer {
+    margin-top: var(--band);
+    padding: 1.5rem 0 var(--band);
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: var(--fs-small);
+  }
+  footer p { margin: 0 0 .5rem; max-width: 62ch; }
+  footer p:last-child { margin-bottom: 0; }
+
+  .theme-toggle {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 10;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .12em;
+    padding: .5rem .9rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+  @media (max-width: 48rem) {
+    .game { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+    .side { width: 100%; }
+    .rel { grid-template-columns: minmax(0, 1fr); }
+    .rel-kind { grid-column: 1; }
+    .fact { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<p class="notice">팬이 만든 비공식 아카이브 · 하이브 및 BTS 공식 페이지가 아닙니다</p>
+
+<header class="hero">
+  <div class="wrap hero-inner">
+    <p class="eyebrow">Unofficial Fan Archive</p>
+    <h1>
+      <span class="ko">진</span>
+      <span class="en">Jin · Kim Seokjin</span>
+    </h1>
+    <p class="hero-lead">
+      BTS의 보컬이자 솔로 아티스트. 아래는 팬이 정리한 기록과,
+      &lsquo;Swim&rsquo;에서 이름을 빌려 온 도트 테트리스입니다.
+    </p>
+  </div>
+  <canvas class="hero-canvas" id="waves" aria-hidden="true"></canvas>
+</header>
+
+<main>
+
+  <!-- ▼ 프로필 ─────────────────────────────── -->
+  <section id="profile" class="wrap">
+    <div class="sec-head">
+      <h2>프로필</h2>
+      <span>01 / Profile</span>
+    </div>
+    <dl class="facts">
+      <div class="fact"><dt>본명</dt><dd>김석진 (Kim Seokjin)</dd></div>
+      <div class="fact"><dt>출생</dt><dd>1992년 12월 4일</dd></div>
+      <div class="fact"><dt>소속</dt><dd>BTS · 빅히트 뮤직</dd></div>
+      <div class="fact"><dt>포지션</dt><dd>보컬</dd></div>
+      <div class="fact"><dt>데뷔</dt><dd>2013년 6월 13일 &lsquo;2 COOL 4 SKOOL&rsquo;</dd></div>
+      <div class="fact"><dt>병역</dt><dd>2023년 12월 입대 · 2024년 6월 전역</dd></div>
+    </dl>
+  </section>
+
+  <!-- ▼ 솔로 작업 ──────────────────────────── -->
+  <section id="discography" class="wrap">
+    <div class="sec-head">
+      <h2>솔로 작업</h2>
+      <span>02 / Discography</span>
+    </div>
+
+    <div class="disc">
+      <article class="rel">
+        <div class="rel-date">2016</div>
+        <h3 class="rel-title">Awake<small>&lsquo;WINGS&rsquo; 수록 솔로곡</small></h3>
+        <div class="rel-kind">Solo Track</div>
+      </article>
+
+      <article class="rel">
+        <div class="rel-date">2018</div>
+        <h3 class="rel-title">Epiphany<small>&lsquo;LOVE YOURSELF 結 Answer&rsquo; 수록</small></h3>
+        <div class="rel-kind">Solo Track</div>
+      </article>
+
+      <article class="rel">
+        <div class="rel-date">2020</div>
+        <h3 class="rel-title">Moon<small>&lsquo;MAP OF THE SOUL : 7&rsquo; 수록</small></h3>
+        <div class="rel-kind">Solo Track</div>
+      </article>
+
+      <article class="rel">
+        <div class="rel-date">2021.12</div>
+        <h3 class="rel-title">슈퍼 참치<small>팬 이벤트로 공개된 자작곡</small></h3>
+        <div class="rel-kind">Single</div>
+      </article>
+
+      <article class="rel">
+        <div class="rel-date">2022.10</div>
+        <h3 class="rel-title">The Astronaut<small>콜드플레이와 공동 작업한 첫 솔로 싱글</small></h3>
+        <div class="rel-kind">Single</div>
+      </article>
+
+      <article class="rel">
+        <div class="rel-date">2024.11</div>
+        <h3 class="rel-title">Happy<small>첫 솔로 미니앨범</small></h3>
+        <div class="rel-kind">Mini Album</div>
+      </article>
+
+      <article class="rel">
+        <div class="rel-date">2025.05</div>
+        <h3 class="rel-title">Echo<small>두 번째 솔로 미니앨범</small></h3>
+        <div class="rel-kind">Mini Album</div>
+      </article>
+
+      <!-- 수정: 아리랑 앨범 정보는 확인 후 채워주세요 -->
+      <article class="rel">
+        <div class="rel-date">2026</div>
+        <h3 class="rel-title">
+          아리랑<span class="unverified">확인 필요</span>
+          <small>수록곡 &lsquo;Swim&rsquo; · 발매일과 상세 정보를 채워주세요</small>
+        </h3>
+        <div class="rel-kind">Album</div>
+      </article>
+    </div>
+
+    <p class="prose" style="margin-top:1.5rem;">
+      2025년 5월까지의 항목은 공개된 발매 정보를 정리한 것이고, &lsquo;아리랑&rsquo;은 제가 확인할 수 없는
+      최신 소식이라 자리만 잡아두었습니다. 날짜와 수록곡을 알려주시면 채워 넣겠습니다.
+    </p>
+  </section>
+
+  <!-- ▼ 테트리스 ───────────────────────────── -->
+  <section id="tetris" class="wrap-wide">
+    <div class="sec-head">
+      <h2>SWIM 도트 테트리스</h2>
+      <span>03 / Game</span>
+    </div>
+
+    <p class="prose" style="margin-bottom:1.75rem;">
+      블록 일곱 종류가 각각 바다 캐릭터입니다. 8×8 도트로 직접 찍은 오리지널 캐릭터이며,
+      공식 굿즈나 뮤직비디오에 나오는 캐릭터와는 관계가 없습니다.
+    </p>
+
+    <div class="game">
+      <div class="board-wrap">
+        <canvas id="board" width="320" height="640" aria-label="테트리스 게임판"></canvas>
+        <div class="overlay" id="overlay">
+          <strong id="overlayTitle">SWIM</strong>
+          <span id="overlayText">Enter 로 시작</span>
+        </div>
+      </div>
+
+      <div class="side">
+        <div>
+          <p class="panel-label">다음</p>
+          <canvas id="next" width="128" height="128" aria-hidden="true"></canvas>
+        </div>
+
+        <dl class="stats">
+          <div class="stat"><dt>점수</dt><dd id="score">0</dd></div>
+          <div class="stat"><dt>줄</dt><dd id="lines">0</dd></div>
+          <div class="stat"><dt>레벨</dt><dd id="level">1</dd></div>
+          <div class="stat"><dt>최고</dt><dd id="best">0</dd></div>
+        </dl>
+
+        <div class="btn-row">
+          <button class="btn" type="button" id="startBtn">시작</button>
+          <button class="btn" type="button" id="pauseBtn">일시정지</button>
+        </div>
+
+        <div>
+          <p class="panel-label">조작</p>
+          <ul class="keys">
+            <li><kbd>← →</kbd><span>좌우 이동</span></li>
+            <li><kbd>↑ / X</kbd><span>회전</span></li>
+            <li><kbd>↓</kbd><span>한 칸 내리기</span></li>
+            <li><kbd>Space</kbd><span>바닥까지</span></li>
+            <li><kbd>P</kbd><span>일시정지</span></li>
+            <li><kbd>Enter</kbd><span>시작 · 다시하기</span></li>
+          </ul>
+          <div class="touchpad">
+            <button class="btn" type="button" data-act="left" aria-label="왼쪽">←</button>
+            <button class="btn" type="button" data-act="rotate" aria-label="회전">↻</button>
+            <button class="btn" type="button" data-act="right" aria-label="오른쪽">→</button>
+            <button class="btn" type="button" data-act="drop" aria-label="떨어뜨리기">↓↓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="panel-label" style="margin-top:2.5rem;">캐릭터 도감</p>
+    <ul class="cast" id="cast"></ul>
+  </section>
+
+  <footer class="wrap">
+    <p>
+      이 페이지는 팬이 만든 비공식 아카이브입니다. BTS, 진, 하이브, 빅히트 뮤직과 공식적인 관련이 없으며
+      공식 이미지·로고·음원을 포함하지 않습니다.
+    </p>
+    <p>
+      게임에 등장하는 도트 캐릭터는 이 페이지를 위해 새로 그린 것입니다.
+      발매 정보에 오류가 있다면 알려주세요.
+    </p>
+  </footer>
+</main>
+
+<button class="theme-toggle" type="button" id="themeToggle" aria-label="화면 밝기 전환">DARK</button>
+
+<script>
+/* ── 화면 테마 ─────────────────────────────────────── */
+var themeApi = (function () {
+  var root = document.documentElement;
+  var btn = document.getElementById('themeToggle');
+  var listeners = [];
+
+  function isDark() {
+    var stamped = root.getAttribute('data-theme');
+    if (stamped) return stamped === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  function sync() {
+    btn.textContent = isDark() ? 'LIGHT' : 'DARK';
+    listeners.forEach(function (fn) { fn(); });
+  }
+  btn.addEventListener('click', function () {
+    root.setAttribute('data-theme', isDark() ? 'light' : 'dark');
+    sync();
+  });
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', sync);
+  sync();
+
+  return {
+    onChange: function (fn) { listeners.push(fn); },
+    token: function (name) {
+      return getComputedStyle(root).getPropertyValue(name).trim();
+    }
+  };
+})();
+
+/* ── 표제부 파도 ───────────────────────────────────── */
+(function () {
+  var cv = document.getElementById('waves');
+  if (!cv) return;
+  var ctx = cv.getContext('2d');
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var w = 0, h = 0, t = 0;
+
+  function resize() {
+    var dpr = window.devicePixelRatio || 1;
+    var rect = cv.getBoundingClientRect();
+    w = rect.width; h = rect.height;
+    cv.width = w * dpr; cv.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function band(offset, amp, speed, alpha) {
+    ctx.beginPath();
+    ctx.moveTo(0, h);
+    for (var x = 0; x <= w; x += 4) {
+      var y = h * offset
+            + Math.sin((x / 90) + t * speed) * amp
+            + Math.sin((x / 37) - t * speed * 1.7) * (amp * 0.35);
+      if (x === 0) ctx.lineTo(0, y); else ctx.lineTo(x, y);
+    }
+    ctx.lineTo(w, h);
+    ctx.closePath();
+    ctx.globalAlpha = alpha;
+    ctx.fill();
+  }
+
+  function frame() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = themeApi.token('--accent');
+    band(0.42, h * 0.10, 1.0, 0.14);
+    band(0.58, h * 0.09, 0.7, 0.20);
+    band(0.76, h * 0.07, 0.45, 0.30);
+    ctx.globalAlpha = 1;
+    if (!still) { t += 0.012; requestAnimationFrame(frame); }
+  }
+
+  window.addEventListener('resize', function () { resize(); if (still) frame(); });
+  resize();
+  frame();
+})();
+
+/* ── SWIM 도트 테트리스 ────────────────────────────
+   8×8 도트로 그린 오리지널 바다 캐릭터 일곱 종.
+   '.' 은 투명, 나머지 글자는 아래 팔레트의 색입니다. */
+(function () {
+  var COLS = 10, ROWS = 20, CELL = 32, DOT = CELL / 8;
+
+  var CHARS = {
+    I: {
+      name: '파도', en: 'Wave', tint: '#2E86C1',
+      cells: [[0,1],[1,1],[2,1],[3,1]], size: 4,
+      pal: { w: '#3E9BD6', W: '#1F6EA8', f: '#DCF2FA', p: '#10293D', m: '#10293D' },
+      art: [
+        '........',
+        '..ffff..',
+        '.ffffff.',
+        'wwwwwwww',
+        'wpwwwwpw',
+        'wwwmmwww',
+        'WWWWWWWW',
+        '.WWWWWW.'
+      ]
+    },
+    J: {
+      name: '물고기', en: 'Fish', tint: '#3E9BD6',
+      cells: [[0,0],[0,1],[1,1],[2,1]], size: 3,
+      pal: { b: '#4FB3E8', d: '#1E6BA8', p: '#0C2438', m: '#0C2438' },
+      art: [
+        '........',
+        '...bb...',
+        '..bbbbb.',
+        '.bpbbbbd',
+        '.bmbbbbd',
+        '..bbbbb.',
+        '...bb...',
+        '........'
+      ]
+    },
+    L: {
+      name: '튜브', en: 'Ring', tint: '#E8654F',
+      cells: [[2,0],[0,1],[1,1],[2,1]], size: 3,
+      pal: { r: '#E8654F', R: '#B94733', W: '#FBEFE6', p: '#3A1B14' },
+      art: [
+        '..rrrr..',
+        '.rpWWpr.',
+        'rrW..Wrr',
+        'rW....Wr',
+        'rW....Wr',
+        'rrW..Wrr',
+        '.RRWWRR.',
+        '..RRRR..'
+      ]
+    },
+    O: {
+      name: '비치볼', en: 'Ball', tint: '#F2D35C',
+      cells: [[0,0],[1,0],[0,1],[1,1]], size: 2,
+      pal: { a: '#F2D35C', b: '#E8654F', c: '#4FA9D8', d: '#59B87A', W: '#FBF7EC', p: '#2A2013' },
+      art: [
+        '..WWWW..',
+        '.aaWWbb.',
+        'aaaWWbbb',
+        'aapWWpbb',
+        'cccWWddd',
+        'cccWWddd',
+        '.ccWWdd.',
+        '..WWWW..'
+      ]
+    },
+    S: {
+      name: '해파리', en: 'Jelly', tint: '#B77BD6',
+      cells: [[1,0],[2,0],[0,1],[1,1]], size: 3,
+      pal: { j: '#B77BD6', J: '#8A54A8', p: '#2C1638', m: '#2C1638' },
+      art: [
+        '..jjjj..',
+        '.jjjjjj.',
+        'jjjjjjjj',
+        'jpjjjjpj',
+        'jjjmmjjj',
+        '.JJJJJJ.',
+        '.J.JJ.J.',
+        'J...J..J'
+      ]
+    },
+    T: {
+      name: '수영선수', en: 'Swimmer', tint: '#F2C89B',
+      cells: [[1,0],[0,1],[1,1],[2,1]], size: 3,
+      pal: { h: '#2B1D18', f: '#16506B', g: '#8FE3F5', s: '#F2C89B', m: '#B05548', p: '#2B1D18' },
+      art: [
+        '..hhhh..',
+        '.hhhhhh.',
+        'hhhhhhhh',
+        'fggffggf',
+        '.ssssss.',
+        '.ssssss.',
+        '..smms..',
+        '..ssss..'
+      ]
+    },
+    Z: {
+      name: '불가사리', en: 'Star', tint: '#F0A93B',
+      cells: [[0,0],[1,0],[1,1],[2,1]], size: 3,
+      pal: { s: '#F0A93B', S: '#C4821F', p: '#3A2408', m: '#3A2408' },
+      art: [
+        '...ss...',
+        '...ss...',
+        'ssssssss',
+        '.ssssss.',
+        '.spssps.',
+        '..smms..',
+        '.SS..SS.',
+        'SS....SS'
+      ]
+    }
+  };
+  var TYPES = Object.keys(CHARS);
+
+  var board = document.getElementById('board');
+  var next = document.getElementById('next');
+  if (!board || !next) return;
+
+  var bx = board.getContext('2d');
+  var nx = next.getContext('2d');
+  bx.imageSmoothingEnabled = false;
+  nx.imageSmoothingEnabled = false;
+
+  var el = {
+    score: document.getElementById('score'),
+    lines: document.getElementById('lines'),
+    level: document.getElementById('level'),
+    best: document.getElementById('best'),
+    overlay: document.getElementById('overlay'),
+    overlayTitle: document.getElementById('overlayTitle'),
+    overlayText: document.getElementById('overlayText'),
+    start: document.getElementById('startBtn'),
+    pause: document.getElementById('pauseBtn')
+  };
+
+  var grid, active, queued, state = 'idle';
+  var score = 0, lines = 0, level = 1, best = readBest();
+  var dropTimer = 0, lastFrame = 0;
+  el.best.textContent = best;
+
+  function fit(canvas, ctx, w, h) {
+    var dpr = window.devicePixelRatio || 1;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+  }
+  fit(board, bx, COLS * CELL, ROWS * CELL);
+  fit(next, nx, 128, 128);
+
+  /* ── 도트 찍기 ─────────────────────────── */
+  function drawSprite(ctx, x, y, cellSize, type) {
+    var def = CHARS[type];
+    var dot = cellSize / 8;
+    for (var r = 0; r < 8; r++) {
+      var row = def.art[r];
+      for (var c = 0; c < 8; c++) {
+        var key = row[c];
+        if (key === '.') continue;
+        ctx.fillStyle = def.pal[key];
+        ctx.fillRect(
+          Math.round(x + c * dot),
+          Math.round(y + r * dot),
+          Math.ceil(dot),
+          Math.ceil(dot)
+        );
+      }
+    }
+  }
+
+  /* ── 조각 ──────────────────────────────── */
+  function makePiece(type) {
+    var def = CHARS[type];
+    var n = def.size;
+    var m = [];
+    for (var y = 0; y < n; y++) m.push(new Array(n).fill(null));
+    def.cells.forEach(function (c) { m[c[1]][c[0]] = type; });
+    return { type: type, matrix: m, x: Math.floor((COLS - n) / 2), y: -1 };
+  }
+
+  function randomType() { return TYPES[Math.floor(Math.random() * TYPES.length)]; }
+
+  function rotate(matrix) {
+    var n = matrix.length, out = [];
+    for (var y = 0; y < n; y++) {
+      out.push(new Array(n).fill(null));
+      for (var x = 0; x < n; x++) out[y][x] = matrix[n - 1 - x][y];
+    }
+    return out;
+  }
+
+  function collides(piece, matrix, offX, offY) {
+    var m = matrix || piece.matrix;
+    var px = piece.x + (offX || 0), py = piece.y + (offY || 0);
+    for (var y = 0; y < m.length; y++) {
+      for (var x = 0; x < m.length; x++) {
+        if (!m[y][x]) continue;
+        var gx = px + x, gy = py + y;
+        if (gx < 0 || gx >= COLS || gy >= ROWS) return true;
+        if (gy >= 0 && grid[gy][gx]) return true;
+      }
+    }
+    return false;
+  }
+
+  function forEachCell(m, fn) {
+    for (var y = 0; y < m.length; y++) {
+      for (var x = 0; x < m.length; x++) if (m[y][x]) fn(x, y);
+    }
+  }
+
+  /* ── 진행 ──────────────────────────────── */
+  function reset() {
+    grid = [];
+    for (var y = 0; y < ROWS; y++) grid.push(new Array(COLS).fill(null));
+    score = 0; lines = 0; level = 1; dropTimer = 0;
+    queued = randomType();
+    spawn();
+    updateStats();
+  }
+
+  function spawn() {
+    active = makePiece(queued);
+    queued = randomType();
+    drawNext();
+    if (collides(active)) gameOver();
+  }
+
+  function dropInterval() { return Math.max(85, 780 - (level - 1) * 62); }
+
+  function step() {
+    if (!collides(active, null, 0, 1)) { active.y++; return; }
+    lock();
+  }
+
+  function lock() {
+    for (var y = 0; y < active.matrix.length; y++) {
+      for (var x = 0; x < active.matrix.length; x++) {
+        if (!active.matrix[y][x]) continue;
+        var gy = active.y + y;
+        if (gy < 0) { gameOver(); return; }
+        grid[gy][active.x + x] = active.type;
+      }
+    }
+    clearLines();
+    spawn();
+  }
+
+  function clearLines() {
+    var cleared = 0;
+    for (var y = ROWS - 1; y >= 0; y--) {
+      if (grid[y].every(function (c) { return c; })) {
+        grid.splice(y, 1);
+        grid.unshift(new Array(COLS).fill(null));
+        cleared++;
+        y++;
+      }
+    }
+    if (!cleared) return;
+    var table = [0, 100, 300, 500, 800];
+    score += table[cleared] * level;
+    lines += cleared;
+    level = Math.floor(lines / 10) + 1;
+    updateStats();
+  }
+
+  function updateStats() {
+    el.score.textContent = score;
+    el.lines.textContent = lines;
+    el.level.textContent = level;
+    if (score > best) { best = score; el.best.textContent = best; writeBest(best); }
+  }
+
+  function readBest() {
+    try { return parseInt(localStorage.getItem('swim.tetris.best'), 10) || 0; } catch (e) { return 0; }
+  }
+  function writeBest(v) {
+    try { localStorage.setItem('swim.tetris.best', String(v)); } catch (e) {}
+  }
+
+  function gameOver() {
+    state = 'over';
+    showOverlay('Game Over', '점수 ' + score + ' · Enter 로 다시');
+  }
+
+  function showOverlay(title, text) {
+    el.overlayTitle.textContent = title;
+    el.overlayText.textContent = text;
+    el.overlay.hidden = false;
+  }
+
+  /* ── 렌더 ──────────────────────────────── */
+  function render() {
+    var W = COLS * CELL, H = ROWS * CELL;
+    bx.fillStyle = themeApi.token('--sunk');
+    bx.fillRect(0, 0, W, H);
+
+    bx.strokeStyle = themeApi.token('--line');
+    bx.globalAlpha = 0.5;
+    bx.lineWidth = 1;
+    for (var i = 1; i < COLS; i++) {
+      bx.beginPath(); bx.moveTo(i * CELL + .5, 0); bx.lineTo(i * CELL + .5, H); bx.stroke();
+    }
+    for (var j = 1; j < ROWS; j++) {
+      bx.beginPath(); bx.moveTo(0, j * CELL + .5); bx.lineTo(W, j * CELL + .5); bx.stroke();
+    }
+    bx.globalAlpha = 1;
+
+    if (!grid) return;
+
+    for (var y = 0; y < ROWS; y++) {
+      for (var x = 0; x < COLS; x++) {
+        if (grid[y][x]) drawSprite(bx, x * CELL, y * CELL, CELL, grid[y][x]);
+      }
+    }
+
+    if (!active || state === 'over') return;
+
+    var ghostY = active.y;
+    while (!collides(active, null, 0, ghostY - active.y + 1)) ghostY++;
+    bx.save();
+    bx.globalAlpha = 0.18;
+    bx.fillStyle = CHARS[active.type].tint;
+    forEachCell(active.matrix, function (cx, cy) {
+      var gy = ghostY + cy;
+      if (gy >= 0) bx.fillRect((active.x + cx) * CELL + 3, gy * CELL + 3, CELL - 6, CELL - 6);
+    });
+    bx.restore();
+
+    forEachCell(active.matrix, function (cx, cy) {
+      var gy = active.y + cy;
+      if (gy >= 0) drawSprite(bx, (active.x + cx) * CELL, gy * CELL, CELL, active.type);
+    });
+  }
+
+  function drawNext() {
+    nx.fillStyle = themeApi.token('--sunk');
+    nx.fillRect(0, 0, 128, 128);
+    if (!queued) return;
+
+    var m = makePiece(queued).matrix;
+    var s = 28;
+    var minX = 99, maxX = -1, minY = 99, maxY = -1;
+    forEachCell(m, function (x, y) {
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+    });
+    var offX = (128 - (maxX - minX + 1) * s) / 2 - minX * s;
+    var offY = (128 - (maxY - minY + 1) * s) / 2 - minY * s;
+    forEachCell(m, function (x, y) {
+      drawSprite(nx, offX + x * s, offY + y * s, s, queued);
+    });
+  }
+
+  /* ── 루프 ──────────────────────────────── */
+  function loop(now) {
+    var dt = now - (lastFrame || now);
+    lastFrame = now;
+    if (state === 'playing') {
+      dropTimer += dt;
+      if (dropTimer >= dropInterval()) { dropTimer = 0; step(); }
+    }
+    render();
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  /* ── 조작 ──────────────────────────────── */
+  function move(dx) { if (state === 'playing' && !collides(active, null, dx, 0)) active.x += dx; }
+  function softDrop() { if (state === 'playing') { dropTimer = 0; step(); } }
+  function hardDrop() {
+    if (state !== 'playing') return;
+    while (!collides(active, null, 0, 1)) active.y++;
+    dropTimer = 0;
+    lock();
+  }
+  function turn() {
+    if (state !== 'playing') return;
+    var rotated = rotate(active.matrix);
+    var kicks = [0, -1, 1, -2, 2];
+    for (var i = 0; i < kicks.length; i++) {
+      if (!collides(active, rotated, kicks[i], 0)) {
+        active.x += kicks[i];
+        active.matrix = rotated;
+        return;
+      }
+    }
+  }
+
+  function startGame() {
+    reset();
+    state = 'playing';
+    lastFrame = 0;
+    el.overlay.hidden = true;
+  }
+  function togglePause() {
+    if (state === 'playing') { state = 'paused'; showOverlay('Paused', 'P 로 계속'); }
+    else if (state === 'paused') { state = 'playing'; el.overlay.hidden = true; }
+  }
+
+  el.start.addEventListener('click', startGame);
+  el.pause.addEventListener('click', togglePause);
+  el.overlay.addEventListener('click', function () {
+    if (state === 'playing') return;
+    if (state === 'paused') togglePause(); else startGame();
+  });
+
+  document.querySelectorAll('.touchpad .btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (state !== 'playing') { startGame(); return; }
+      var act = btn.dataset.act;
+      if (act === 'left') move(-1);
+      else if (act === 'right') move(1);
+      else if (act === 'rotate') turn();
+      else if (act === 'drop') hardDrop();
+    });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'Enter') {
+      if (state !== 'playing') { e.preventDefault(); startGame(); }
+      return;
+    }
+    if (e.key === 'p' || e.key === 'P') {
+      if (state === 'playing' || state === 'paused') { e.preventDefault(); togglePause(); }
+      return;
+    }
+    if (state !== 'playing') return;
+    switch (e.key) {
+      case 'ArrowLeft':  e.preventDefault(); move(-1); break;
+      case 'ArrowRight': e.preventDefault(); move(1); break;
+      case 'ArrowDown':  e.preventDefault(); softDrop(); break;
+      case 'ArrowUp':
+      case 'x':
+      case 'X':          e.preventDefault(); turn(); break;
+      case ' ':          e.preventDefault(); hardDrop(); break;
+    }
+  });
+
+  /* ── 캐릭터 도감 ───────────────────────── */
+  var cast = document.getElementById('cast');
+  TYPES.forEach(function (type) {
+    var def = CHARS[type];
+    var li = document.createElement('li');
+    var cv = document.createElement('canvas');
+    var size = 64;
+    var ctx = cv.getContext('2d');
+    var dpr = window.devicePixelRatio || 1;
+    cv.width = size * dpr; cv.height = size * dpr;
+    cv.style.width = size + 'px'; cv.style.height = size + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+    drawSprite(ctx, 0, 0, size, type);
+
+    var b = document.createElement('b');
+    b.textContent = def.name;
+    var s = document.createElement('small');
+    s.textContent = type + ' · ' + def.en;
+
+    li.appendChild(cv);
+    li.appendChild(b);
+    li.appendChild(s);
+    cast.appendChild(li);
+  });
+
+  themeApi.onChange(function () { drawNext(); });
+
+  reset();
+  state = 'idle';
+  showOverlay('SWIM', 'Enter 로 시작');
+})();
+</script>
