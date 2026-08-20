@@ -386,6 +386,7 @@
     gap: .75rem;
     margin: 0 0 1.5rem;
   }
+  .fx-seg[hidden] { display: none; }
   .fx-seg {
     display: inline-flex;
     border: 1px solid var(--line);
@@ -976,7 +977,7 @@
       </div>
 
       <div class="fx-bar">
-        <div class="fx-seg" role="group" aria-label="수출입 구분">
+        <div class="fx-seg" role="group" aria-label="수출입 구분" id="fxSeg" hidden>
           <button type="button" id="fxImport" aria-pressed="true">수입</button>
           <button type="button" id="fxExport" aria-pressed="false">수출</button>
         </div>
@@ -984,7 +985,7 @@
         <span class="fx-note" id="fxNote">불러오는 중…</span>
       </div>
 
-      <p class="fx-caption">관세청 관세환율 · 각 통화 1단위당 원화</p>
+      <p class="fx-caption" id="fxCaption">환율을 불러오는 중입니다…</p>
 
       <ul class="fx-grid" id="fxGrid">
         <li class="fx-card is-loading"><span class="code">USD</span><span class="name">미국 달러</span><span class="rate">조회 중…</span></li>
@@ -1696,6 +1697,8 @@
 
   var grid = document.getElementById('fxGrid');
   var note = document.getElementById('fxNote');
+  var caption = document.getElementById('fxCaption');
+  var seg = document.getElementById('fxSeg');
   var msg = document.getElementById('fxMsg');
   var reload = document.getElementById('fxReload');
   var btnImport = document.getElementById('fxImport');
@@ -1765,15 +1768,29 @@
         grid.appendChild(card(code, label, '고시 없음', '', true));
         return;
       }
-      grid.appendChild(card(code, label, nf.format(row.rate), row.unitName, false));
+      var unit = (row.per > 1 ? row.per + ' ' + code + ' 기준 · ' : '') + row.unitName;
+      grid.appendChild(card(code, label, nf.format(row.rate), unit, false));
     });
 
-    note.textContent = '적용 ' + prettyDate(data.date) + ' · ' + (type === '1' ? '수출' : '수입');
-    setMessage(
-      missing.length
-        ? '이번 고시에 ' + missing.join(', ') + ' 환율이 포함되지 않았습니다.'
-        : ''
-    );
+    var isExim = data.source === 'exim';
+    caption.textContent = isExim
+      ? '한국수출입은행 매매기준율 · 영업일마다 갱신'
+      : '관세청 관세환율 · 매주 일요일 고시';
+    note.textContent =
+      (isExim ? '매매기준율 ' : '관세환율 ') +
+      prettyDate(data.date) +
+      (isExim ? '' : ' · ' + (type === '1' ? '수출' : '수입'));
+
+    seg.hidden = isExim;
+
+    var notes = [];
+    if (missing.length) notes.push('이번 고시에 ' + missing.join(', ') + ' 환율이 없습니다.');
+    if (data.fallback) {
+      notes.push(
+        '매매기준율 인증키(<code>EXIM_KEY</code>)가 없어 관세청 관세환율로 대신 표시하고 있습니다.'
+      );
+    }
+    setMessage(notes.join(' '));
   }
 
   function showError(text) {
@@ -1781,6 +1798,7 @@
     SHOW.forEach(function (pair) {
       grid.appendChild(card(pair[0], pair[1], '—', '', true));
     });
+    caption.textContent = '환율을 불러오지 못했습니다.';
     note.textContent = '조회 실패';
     setMessage(text);
   }
