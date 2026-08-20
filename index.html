@@ -1767,8 +1767,8 @@
           if (!data) {
             // 정적 호스팅에는 /api 가 없어 HTML 404 가 돌아온다
             throw new Error(
-              '이 섹션은 서버리스 함수가 있는 <a href="https://kkong-hj.vercel.app#fx">Vercel 배포본</a>에서만 동작합니다. ' +
-              'GitHub Pages 는 정적 파일만 제공하므로 <code>/api/fxrt</code> 가 없습니다.'
+              '환율 API에 연결하지 못했습니다. 파일을 직접 열었거나 <code>/api/fxrt</code> 가 없는 환경일 수 있습니다. ' +
+              '<a href="https://kkong-hj.vercel.app#fx">배포된 사이트</a>에서 확인해 주세요.'
             );
           }
           if (!res.ok) throw new Error(data.error || '요청이 실패했습니다.');
