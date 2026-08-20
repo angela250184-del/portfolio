@@ -787,8 +787,8 @@
       </div>
 
       <p class="prose" style="margin:0 0 1.75rem; color:var(--muted); max-width:62ch;">
-        일곱 가지 블록마다 성격이 다른 캐릭터가 살고 있습니다. 쌓인 블록 중 머리가 드러난 칸에만
-        모자와 헤드폰, 왕관이 나타납니다.
+        일곱 가지 블록에 코알라, 햄스터, 토끼, 곰, 병아리, 고양이, 여우가 살고 있습니다.
+        쌓인 블록 중 머리가 드러난 칸에만 귀가 쫑긋 올라옵니다.
       </p>
 
       <div class="game">
@@ -903,15 +903,15 @@
 (function () {
   var COLS = 10, ROWS = 20, CELL = 30;
 
-  // 종류별 색과 장식
+  // 블록 일곱 종류에 각각 동물을 붙였다
   var PIECES = {
-    I: { color: '#7C5CE6', hat: 'headphones', cells: [[0,1],[1,1],[2,1],[3,1]], size: 4 },
-    J: { color: '#4A8FE7', hat: 'cap',        cells: [[0,0],[0,1],[1,1],[2,1]], size: 3 },
-    L: { color: '#E8903C', hat: 'beanie',     cells: [[2,0],[0,1],[1,1],[2,1]], size: 3 },
-    O: { color: '#E8C64A', hat: 'ribbon',     cells: [[0,0],[1,0],[0,1],[1,1]], size: 2 },
-    S: { color: '#4FB477', hat: 'star',       cells: [[1,0],[2,0],[0,1],[1,1]], size: 3 },
-    T: { color: '#C05CC9', hat: 'crown',      cells: [[1,0],[0,1],[1,1],[2,1]], size: 3 },
-    Z: { color: '#E05C6E', hat: 'glasses',    cells: [[0,0],[1,0],[1,1],[2,1]], size: 3 }
+    I: { name: '코알라', animal: 'koala',   color: '#8FA3B3', cells: [[0,1],[1,1],[2,1],[3,1]], size: 4 },
+    J: { name: '햄스터', animal: 'hamster', color: '#E5B972', cells: [[0,0],[0,1],[1,1],[2,1]], size: 3 },
+    L: { name: '토끼',   animal: 'rabbit',  color: '#EFE1DD', cells: [[2,0],[0,1],[1,1],[2,1]], size: 3 },
+    O: { name: '곰',     animal: 'bear',    color: '#8E5F3B', cells: [[0,0],[1,0],[0,1],[1,1]], size: 2 },
+    S: { name: '병아리', animal: 'chick',   color: '#F6D23E', cells: [[1,0],[2,0],[0,1],[1,1]], size: 3 },
+    T: { name: '고양이', animal: 'cat',     color: '#C3B2A3', cells: [[1,0],[0,1],[1,1],[2,1]], size: 3 },
+    Z: { name: '여우',   animal: 'fox',     color: '#DE5F3B', cells: [[0,0],[1,0],[1,1],[2,1]], size: 3 }
   };
   var TYPES = Object.keys(PIECES);
 
@@ -977,152 +977,230 @@
     return 'rgb(' + mix(r) + ',' + mix(g) + ',' + mix(b) + ')';
   }
 
-  function drawCharacter(ctx, x, y, s, type, showHat) {
+  function drawCharacter(ctx, x, y, s, type, showEars) {
     var p = PIECES[type];
     var pad = s * 0.06;
     var w = s - pad * 2;
     var cx = x + s / 2;
 
     ctx.save();
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
 
-    // 몸통
-    roundRect(ctx, x + pad, y + pad, w, w, s * 0.22);
+    // 귀를 얼굴보다 먼저 그려서 자연스럽게 겹치게 한다
+    if (showEars) drawEars(ctx, p.animal, cx, y, s, p.color);
+
+    // 얼굴
+    roundRect(ctx, x + pad, y + pad, w, w, s * 0.3);
     var g = ctx.createLinearGradient(0, y, 0, y + s);
-    g.addColorStop(0, shade(p.color, 0.18));
-    g.addColorStop(1, shade(p.color, -0.14));
+    g.addColorStop(0, shade(p.color, 0.16));
+    g.addColorStop(1, shade(p.color, -0.15));
     ctx.fillStyle = g;
     ctx.fill();
-    ctx.strokeStyle = shade(p.color, -0.35);
+    ctx.strokeStyle = shade(p.color, -0.42);
     ctx.lineWidth = Math.max(1, s * 0.035);
     ctx.stroke();
 
-    var eyeY = y + s * 0.46;
-    var eyeR = Math.max(1, s * 0.075);
-    var eyeDX = s * 0.19;
-
-    // 볼
-    ctx.fillStyle = 'rgba(255,255,255,.22)';
-    ctx.beginPath();
-    ctx.arc(cx - eyeDX * 1.55, eyeY + s * 0.14, s * 0.09, 0, Math.PI * 2);
-    ctx.arc(cx + eyeDX * 1.55, eyeY + s * 0.14, s * 0.09, 0, Math.PI * 2);
-    ctx.fill();
-
-    // 눈
-    ctx.fillStyle = '#1C1630';
-    ctx.beginPath();
-    ctx.arc(cx - eyeDX, eyeY, eyeR, 0, Math.PI * 2);
-    ctx.arc(cx + eyeDX, eyeY, eyeR, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,.9)';
-    ctx.beginPath();
-    ctx.arc(cx - eyeDX + eyeR * 0.35, eyeY - eyeR * 0.35, eyeR * 0.34, 0, Math.PI * 2);
-    ctx.arc(cx + eyeDX + eyeR * 0.35, eyeY - eyeR * 0.35, eyeR * 0.34, 0, Math.PI * 2);
-    ctx.fill();
-
-    // 입
-    ctx.strokeStyle = '#1C1630';
-    ctx.lineWidth = Math.max(1, s * 0.045);
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.arc(cx, eyeY + s * 0.13, s * 0.1, 0.15 * Math.PI, 0.85 * Math.PI);
-    ctx.stroke();
-
-    if (showHat) drawHat(ctx, p.hat, x, y, s, p.color, cx, eyeY, eyeDX, eyeR);
+    drawFace(ctx, p.animal, cx, y, s, p.color);
 
     ctx.restore();
   }
 
-  function drawHat(ctx, kind, x, y, s, color, cx, eyeY, eyeDX, eyeR) {
-    var top = y + s * 0.1;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
+  // 귀 — 위 칸이 비어 있는 "머리" 칸에만 그린다
+  function drawEars(ctx, kind, cx, y, s, color) {
+    var outer = shade(color, -0.1);
+    var pink = '#E49AA4';
 
-    if (kind === 'headphones') {
-      ctx.strokeStyle = '#2A2340';
-      ctx.lineWidth = Math.max(1.5, s * 0.075);
+    ctx.strokeStyle = shade(color, -0.42);
+    ctx.lineWidth = Math.max(1, s * 0.03);
+
+    function ear(ex, ey, rx, ry, fill) {
       ctx.beginPath();
-      ctx.arc(cx, top + s * 0.16, s * 0.3, Math.PI * 1.08, Math.PI * 1.92);
+      ctx.ellipse(ex, ey, rx, ry, 0, 0, Math.PI * 2);
+      ctx.fillStyle = fill;
+      ctx.fill();
       ctx.stroke();
-      ctx.fillStyle = '#2A2340';
-      roundRect(ctx, cx - s * 0.4, top + s * 0.1, s * 0.16, s * 0.22, s * 0.06); ctx.fill();
-      roundRect(ctx, cx + s * 0.24, top + s * 0.1, s * 0.16, s * 0.22, s * 0.06); ctx.fill();
+    }
 
-    } else if (kind === 'cap') {
-      ctx.fillStyle = shade(color, -0.45);
+    function tri(baseX1, baseY1, baseX2, baseY2, tipX, tipY, fill) {
       ctx.beginPath();
-      ctx.arc(cx, top + s * 0.18, s * 0.28, Math.PI, 0);
-      ctx.closePath(); ctx.fill();
-      roundRect(ctx, cx - s * 0.02, top + s * 0.13, s * 0.42, s * 0.09, s * 0.045);
+      ctx.moveTo(baseX1, baseY1);
+      ctx.lineTo(tipX, tipY);
+      ctx.lineTo(baseX2, baseY2);
+      ctx.closePath();
+      ctx.fillStyle = fill;
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    if (kind === 'koala') {
+      ear(cx - s * 0.36, y + s * 0.34, s * 0.17, s * 0.17, outer);
+      ear(cx + s * 0.36, y + s * 0.34, s * 0.17, s * 0.17, outer);
+      ctx.fillStyle = shade(color, 0.4);
+      ctx.beginPath();
+      ctx.ellipse(cx - s * 0.36, y + s * 0.34, s * 0.09, s * 0.09, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(cx + s * 0.36, y + s * 0.34, s * 0.09, s * 0.09, 0, 0, Math.PI * 2);
       ctx.fill();
 
-    } else if (kind === 'beanie') {
-      ctx.fillStyle = shade(color, -0.4);
+    } else if (kind === 'hamster') {
+      ear(cx - s * 0.24, y + s * 0.09, s * 0.12, s * 0.12, outer);
+      ear(cx + s * 0.24, y + s * 0.09, s * 0.12, s * 0.12, outer);
+
+    } else if (kind === 'rabbit') {
+      ear(cx - s * 0.16, y - s * 0.01, s * 0.085, s * 0.24, outer);
+      ear(cx + s * 0.16, y - s * 0.01, s * 0.085, s * 0.24, outer);
+      ctx.fillStyle = pink;
       ctx.beginPath();
-      ctx.arc(cx, top + s * 0.2, s * 0.27, Math.PI, 0);
-      ctx.closePath(); ctx.fill();
-      roundRect(ctx, cx - s * 0.3, top + s * 0.17, s * 0.6, s * 0.09, s * 0.045);
-      ctx.fillStyle = shade(color, 0.35); ctx.fill();
+      ctx.ellipse(cx - s * 0.16, y + s * 0.01, s * 0.038, s * 0.15, 0, 0, Math.PI * 2);
+      ctx.fill();
       ctx.beginPath();
-      ctx.arc(cx, top - s * 0.03, s * 0.08, 0, Math.PI * 2);
+      ctx.ellipse(cx + s * 0.16, y + s * 0.01, s * 0.038, s * 0.15, 0, 0, Math.PI * 2);
       ctx.fill();
 
-    } else if (kind === 'ribbon') {
-      ctx.fillStyle = shade(color, -0.42);
+    } else if (kind === 'bear') {
+      ear(cx - s * 0.27, y + s * 0.1, s * 0.14, s * 0.14, outer);
+      ear(cx + s * 0.27, y + s * 0.1, s * 0.14, s * 0.14, outer);
+
+    } else if (kind === 'chick') {
+      // 귀 대신 머리깃 세 가닥
+      ctx.strokeStyle = shade(color, -0.32);
+      ctx.lineWidth = Math.max(1.2, s * 0.055);
       ctx.beginPath();
-      ctx.moveTo(cx - s * 0.05, top + s * 0.14);
-      ctx.lineTo(cx - s * 0.32, top + s * 0.02);
-      ctx.lineTo(cx - s * 0.32, top + s * 0.26);
+      ctx.moveTo(cx - s * 0.11, y + s * 0.13); ctx.lineTo(cx - s * 0.17, y - s * 0.02);
+      ctx.moveTo(cx,            y + s * 0.11); ctx.lineTo(cx,            y - s * 0.07);
+      ctx.moveTo(cx + s * 0.11, y + s * 0.13); ctx.lineTo(cx + s * 0.17, y - s * 0.02);
+      ctx.stroke();
+
+    } else if (kind === 'cat') {
+      tri(cx - s * 0.38, y + s * 0.26, cx - s * 0.1, y + s * 0.14, cx - s * 0.32, y - s * 0.05, outer);
+      tri(cx + s * 0.38, y + s * 0.26, cx + s * 0.1, y + s * 0.14, cx + s * 0.32, y - s * 0.05, outer);
+      ctx.fillStyle = pink;
+      ctx.beginPath();
+      ctx.moveTo(cx - s * 0.29, y + s * 0.19);
+      ctx.lineTo(cx - s * 0.31, y + s * 0.03);
+      ctx.lineTo(cx - s * 0.18, y + s * 0.15);
       ctx.closePath(); ctx.fill();
       ctx.beginPath();
-      ctx.moveTo(cx + s * 0.05, top + s * 0.14);
-      ctx.lineTo(cx + s * 0.32, top + s * 0.02);
-      ctx.lineTo(cx + s * 0.32, top + s * 0.26);
+      ctx.moveTo(cx + s * 0.29, y + s * 0.19);
+      ctx.lineTo(cx + s * 0.31, y + s * 0.03);
+      ctx.lineTo(cx + s * 0.18, y + s * 0.15);
+      ctx.closePath(); ctx.fill();
+
+    } else if (kind === 'fox') {
+      tri(cx - s * 0.4, y + s * 0.3, cx - s * 0.08, y + s * 0.14, cx - s * 0.34, y - s * 0.1, outer);
+      tri(cx + s * 0.4, y + s * 0.3, cx + s * 0.08, y + s * 0.14, cx + s * 0.34, y - s * 0.1, outer);
+      ctx.fillStyle = '#2E2A33';
+      ctx.beginPath();
+      ctx.moveTo(cx - s * 0.29, y + s * 0.03);
+      ctx.lineTo(cx - s * 0.34, y - s * 0.1);
+      ctx.lineTo(cx - s * 0.22, y - s * 0.02);
       ctx.closePath(); ctx.fill();
       ctx.beginPath();
-      ctx.arc(cx, top + s * 0.14, s * 0.075, 0, Math.PI * 2);
+      ctx.moveTo(cx + s * 0.29, y + s * 0.03);
+      ctx.lineTo(cx + s * 0.34, y - s * 0.1);
+      ctx.lineTo(cx + s * 0.22, y - s * 0.02);
+      ctx.closePath(); ctx.fill();
+    }
+  }
+
+  // 얼굴 — 종류마다 코와 입이 다르다
+  function drawFace(ctx, kind, cx, y, s, color) {
+    var dark = '#2E2A33';
+    var eyeY = y + s * 0.47;
+    var eyeR = Math.max(1, s * 0.08);
+    var eyeDX = s * 0.19;
+    var muzzleY = y + s * 0.68;
+
+    // 볼
+    ctx.fillStyle = 'rgba(255,255,255,.2)';
+    ctx.beginPath();
+    ctx.arc(cx - eyeDX * 1.7, eyeY + s * 0.13, s * 0.085, 0, Math.PI * 2);
+    ctx.arc(cx + eyeDX * 1.7, eyeY + s * 0.13, s * 0.085, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 주둥이
+    if (kind === 'bear' || kind === 'hamster') {
+      ctx.fillStyle = shade(color, 0.45);
+      ctx.beginPath();
+      ctx.ellipse(cx, muzzleY, s * 0.2, s * 0.14, 0, 0, Math.PI * 2);
       ctx.fill();
-
-    } else if (kind === 'star') {
-      ctx.fillStyle = '#F5E06A';
-      ctx.strokeStyle = shade(color, -0.4);
-      ctx.lineWidth = Math.max(1, s * 0.03);
+    } else if (kind === 'fox') {
+      ctx.fillStyle = '#F7F1EA';
       ctx.beginPath();
-      var R = s * 0.17, r = R * 0.45, sx = cx + s * 0.2, sy = top + s * 0.1;
-      for (var i = 0; i < 10; i++) {
-        var rad = (i % 2 === 0) ? R : r;
-        var a = (Math.PI / 5) * i - Math.PI / 2;
-        var px = sx + Math.cos(a) * rad, py = sy + Math.sin(a) * rad;
-        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
-      }
-      ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.moveTo(cx - s * 0.21, muzzleY - s * 0.11);
+      ctx.lineTo(cx + s * 0.21, muzzleY - s * 0.11);
+      ctx.lineTo(cx, muzzleY + s * 0.15);
+      ctx.closePath();
+      ctx.fill();
+    }
 
-    } else if (kind === 'crown') {
-      ctx.fillStyle = '#F0C64B';
-      ctx.strokeStyle = shade(color, -0.45);
-      ctx.lineWidth = Math.max(1, s * 0.03);
-      var w = s * 0.44, h = s * 0.2, bx0 = cx - w / 2, by0 = top + s * 0.24;
-      ctx.beginPath();
-      ctx.moveTo(bx0, by0);
-      ctx.lineTo(bx0, by0 - h);
-      ctx.lineTo(bx0 + w * 0.25, by0 - h * 0.4);
-      ctx.lineTo(cx, by0 - h * 1.25);
-      ctx.lineTo(bx0 + w * 0.75, by0 - h * 0.4);
-      ctx.lineTo(bx0 + w, by0 - h);
-      ctx.lineTo(bx0 + w, by0);
-      ctx.closePath(); ctx.fill(); ctx.stroke();
+    // 눈
+    ctx.fillStyle = dark;
+    ctx.beginPath();
+    ctx.arc(cx - eyeDX, eyeY, eyeR, 0, Math.PI * 2);
+    ctx.arc(cx + eyeDX, eyeY, eyeR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.92)';
+    ctx.beginPath();
+    ctx.arc(cx - eyeDX + eyeR * 0.34, eyeY - eyeR * 0.34, eyeR * 0.33, 0, Math.PI * 2);
+    ctx.arc(cx + eyeDX + eyeR * 0.34, eyeY - eyeR * 0.34, eyeR * 0.33, 0, Math.PI * 2);
+    ctx.fill();
 
-    } else if (kind === 'glasses') {
-      ctx.strokeStyle = '#2A2340';
-      ctx.lineWidth = Math.max(1.2, s * 0.045);
+    // 병아리는 부리
+    if (kind === 'chick') {
+      ctx.fillStyle = '#EE8F2E';
       ctx.beginPath();
-      ctx.arc(cx - eyeDX, eyeY, eyeR * 1.75, 0, Math.PI * 2);
-      ctx.moveTo(cx + eyeDX + eyeR * 1.75, eyeY);
-      ctx.arc(cx + eyeDX, eyeY, eyeR * 1.75, 0, Math.PI * 2);
-      ctx.moveTo(cx - eyeDX + eyeR * 1.75, eyeY);
-      ctx.lineTo(cx + eyeDX - eyeR * 1.75, eyeY);
+      ctx.moveTo(cx - s * 0.11, y + s * 0.63);
+      ctx.lineTo(cx + s * 0.11, y + s * 0.63);
+      ctx.lineTo(cx, y + s * 0.79);
+      ctx.closePath();
+      ctx.fill();
+      return;
+    }
+
+    // 코알라는 큰 코
+    if (kind === 'koala') {
+      ctx.fillStyle = dark;
+      roundRect(ctx, cx - s * 0.13, y + s * 0.59, s * 0.26, s * 0.21, s * 0.1);
+      ctx.fill();
+      return;
+    }
+
+    var noseY = (kind === 'bear' || kind === 'hamster' || kind === 'fox') ? muzzleY - s * 0.05 : y + s * 0.64;
+
+    // 코
+    ctx.fillStyle = (kind === 'rabbit' || kind === 'cat') ? '#DD838F' : dark;
+    ctx.beginPath();
+    ctx.moveTo(cx - s * 0.07, noseY - s * 0.035);
+    ctx.lineTo(cx + s * 0.07, noseY - s * 0.035);
+    ctx.lineTo(cx, noseY + s * 0.06);
+    ctx.closePath();
+    ctx.fill();
+
+    // 입
+    ctx.strokeStyle = dark;
+    ctx.lineWidth = Math.max(1, s * 0.04);
+    ctx.beginPath();
+    ctx.arc(cx - s * 0.055, noseY + s * 0.085, s * 0.055, 0, Math.PI);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx + s * 0.055, noseY + s * 0.085, s * 0.055, 0, Math.PI);
+    ctx.stroke();
+
+    // 수염
+    if (kind === 'cat' || kind === 'fox') {
+      ctx.lineWidth = Math.max(0.8, s * 0.024);
+      ctx.beginPath();
+      ctx.moveTo(cx - s * 0.15, noseY);            ctx.lineTo(cx - s * 0.36, noseY - s * 0.05);
+      ctx.moveTo(cx - s * 0.15, noseY + s * 0.05); ctx.lineTo(cx - s * 0.36, noseY + s * 0.08);
+      ctx.moveTo(cx + s * 0.15, noseY);            ctx.lineTo(cx + s * 0.36, noseY - s * 0.05);
+      ctx.moveTo(cx + s * 0.15, noseY + s * 0.05); ctx.lineTo(cx + s * 0.36, noseY + s * 0.08);
       ctx.stroke();
     }
   }
+
 
   /* ── 조각 ──────────────────────────────────── */
   function makePiece(type) {
