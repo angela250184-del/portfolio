@@ -378,6 +378,109 @@
   .fact dd { margin: 0; }
   .fact dd small { display: block; color: var(--muted); font-size: var(--fs-small); }
 
+  /* ── 환율 ─────────────────────────────────────────── */
+  .fx-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .75rem;
+    margin: 0 0 1.5rem;
+  }
+  .fx-seg {
+    display: inline-flex;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .fx-seg button {
+    background: none;
+    border: 0;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    padding: .45rem 1rem;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease;
+  }
+  .fx-seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+  .fx-seg button:not([aria-pressed="true"]):hover { color: var(--ink); }
+
+  .fx-reload {
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    padding: .45rem .95rem;
+    cursor: pointer;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .fx-reload:hover { border-color: var(--accent); color: var(--accent); }
+  .fx-reload[disabled] { opacity: .5; cursor: default; }
+
+  .fx-note {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: var(--fs-label);
+    letter-spacing: .1em;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .fx-table { width: 100%; border-collapse: collapse; }
+  .fx-table caption { text-align: left; padding: 0 0 .75rem; color: var(--muted); font-size: var(--fs-small); }
+  .fx-table th {
+    text-align: left;
+    font-family: var(--mono);
+    font-weight: 400;
+    font-size: var(--fs-label);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--faint);
+    padding: 0 0 .6rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .fx-table th.num, .fx-table td.num { text-align: right; }
+  .fx-table td {
+    padding: .85rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: baseline;
+  }
+  .fx-code {
+    font-family: var(--mono);
+    font-size: 1rem;
+    letter-spacing: .06em;
+  }
+  .fx-code small { display: block; font-size: var(--fs-small); letter-spacing: 0; color: var(--muted); }
+  .fx-rate {
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .fx-rate span { color: var(--faint); font-size: var(--fs-small); margin-left: .3rem; }
+  .fx-unit { color: var(--muted); font-size: var(--fs-small); }
+
+  .fx-msg {
+    padding: 1.25rem 0;
+    color: var(--muted);
+    font-size: var(--fs-small);
+    line-height: 1.7;
+  }
+  .fx-msg a { color: var(--accent); }
+  .fx-msg[hidden] { display: none; }
+  .fx-skeleton td { color: var(--faint); }
+
+  @media (max-width: 34rem) {
+    .fx-note { margin-left: 0; width: 100%; }
+    .fx-unit { display: none; }
+  }
+
   footer {
     margin-top: var(--band);
     padding-top: 1.25rem;
@@ -594,6 +697,7 @@
       <a href="#career"><i>04</i><span>경력</span></a>
       <a href="#record"><i>05</i><span>학력 · 수상</span></a>
       <a href="#play"><i>06</i><span>놀이</span></a>
+      <a href="#fx"><i>07</i><span>환율</span></a>
     </nav>
 
     <button class="theme-toggle" type="button" id="themeToggle" aria-label="밝은 화면과 어두운 화면 전환">DARK</button>
@@ -837,6 +941,39 @@
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- ▼ 환율 ──────────────────────────────────── -->
+    <section id="fx">
+      <div class="sec-head">
+        <h2>환율</h2>
+        <span>07 / Exchange Rate</span>
+      </div>
+
+      <div class="fx-bar">
+        <div class="fx-seg" role="group" aria-label="수출입 구분">
+          <button type="button" id="fxImport" aria-pressed="true">수입</button>
+          <button type="button" id="fxExport" aria-pressed="false">수출</button>
+        </div>
+        <button type="button" class="fx-reload" id="fxReload">다시 조회</button>
+        <span class="fx-note" id="fxNote">불러오는 중…</span>
+      </div>
+
+      <table class="fx-table">
+        <caption>관세청 관세환율 · 1단위당 원화</caption>
+        <thead>
+          <tr>
+            <th scope="col">통화</th>
+            <th scope="col" class="num">환율</th>
+            <th scope="col" class="fx-unit-head">화폐단위</th>
+          </tr>
+        </thead>
+        <tbody id="fxBody">
+          <tr class="fx-skeleton"><td colspan="3">조회하는 중입니다…</td></tr>
+        </tbody>
+      </table>
+
+      <p class="fx-msg" id="fxMsg" hidden></p>
     </section>
 
     <footer>
@@ -1519,5 +1656,142 @@
   reset();
   state = 'idle';
   showOverlay('테트리스', '시작하려면 Enter');
+})();
+</script>
+
+<script>
+/* ── 환율 ────────────────────────────────────────────
+   /api/fxrt 가 관세청 관세환율을 중계한다.
+   인증키는 서버에만 있으므로 이 페이지에는 키가 없다. */
+(function () {
+  // 보여줄 통화와 한글 이름 (표시 순서)
+  var SHOW = [
+    ['USD', '미국 달러'],
+    ['EUR', '유로'],
+    ['GBP', '영국 파운드'],
+    ['JPY', '일본 엔'],
+    ['CNY', '중국 위안']
+  ];
+
+  var body = document.getElementById('fxBody');
+  var note = document.getElementById('fxNote');
+  var msg = document.getElementById('fxMsg');
+  var reload = document.getElementById('fxReload');
+  var btnImport = document.getElementById('fxImport');
+  var btnExport = document.getElementById('fxExport');
+  if (!body) return;
+
+  var nf = new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 4 });
+  var type = '2';
+  var busy = false;
+
+  function prettyDate(d) {
+    if (!/^\d{8}$/.test(d)) return d;
+    return d.slice(0, 4) + '.' + d.slice(4, 6) + '.' + d.slice(6, 8);
+  }
+
+  function setMessage(html) {
+    if (html) { msg.innerHTML = html; msg.hidden = false; }
+    else { msg.textContent = ''; msg.hidden = true; }
+  }
+
+  function render(data) {
+    var byCode = {};
+    data.rates.forEach(function (r) { byCode[r.currency] = r; });
+
+    body.textContent = '';
+    var missing = [];
+
+    SHOW.forEach(function (pair) {
+      var code = pair[0], label = pair[1];
+      var row = byCode[code];
+      if (!row) { missing.push(code); return; }
+
+      var tr = document.createElement('tr');
+
+      var td1 = document.createElement('td');
+      td1.className = 'fx-code';
+      td1.appendChild(document.createTextNode(code));
+      var small = document.createElement('small');
+      small.textContent = label;
+      td1.appendChild(small);
+
+      var td2 = document.createElement('td');
+      td2.className = 'num fx-rate';
+      td2.appendChild(document.createTextNode(nf.format(row.rate)));
+      var won = document.createElement('span');
+      won.textContent = '원';
+      td2.appendChild(won);
+
+      var td3 = document.createElement('td');
+      td3.className = 'fx-unit';
+      td3.textContent = row.unitName;
+
+      tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
+      body.appendChild(tr);
+    });
+
+    note.textContent = '적용 ' + prettyDate(data.date) + ' · ' + (type === '1' ? '수출' : '수입');
+    setMessage(
+      missing.length
+        ? '이번 고시에 ' + missing.join(', ') + ' 환율이 포함되지 않았습니다.'
+        : ''
+    );
+  }
+
+  function showError(text) {
+    body.textContent = '';
+    var tr = document.createElement('tr');
+    var td = document.createElement('td');
+    td.colSpan = 3;
+    td.className = 'fx-msg';
+    td.textContent = '환율을 불러오지 못했습니다.';
+    tr.appendChild(td);
+    body.appendChild(tr);
+    note.textContent = '조회 실패';
+    setMessage(text);
+  }
+
+  function load() {
+    if (busy) return;
+    busy = true;
+    reload.disabled = true;
+    note.textContent = '불러오는 중…';
+    setMessage('');
+
+    fetch('/api/fxrt?type=' + type, { headers: { Accept: 'application/json' } })
+      .then(function (res) {
+        return res.text().then(function (text) {
+          var data = null;
+          try { data = JSON.parse(text); } catch (e) { /* JSON 이 아니면 아래에서 처리 */ }
+          if (!data) {
+            // 정적 호스팅에는 /api 가 없어 HTML 404 가 돌아온다
+            throw new Error(
+              '이 섹션은 서버리스 함수가 있는 <a href="https://kkong-hj.vercel.app#fx">Vercel 배포본</a>에서만 동작합니다. ' +
+              'GitHub Pages 는 정적 파일만 제공하므로 <code>/api/fxrt</code> 가 없습니다.'
+            );
+          }
+          if (!res.ok) throw new Error(data.error || '요청이 실패했습니다.');
+          return data;
+        });
+      })
+      .then(render)
+      .catch(function (e) { showError(e.message); })
+      .finally(function () { busy = false; reload.disabled = false; });
+  }
+
+  function pick(next) {
+    if (type === next) return;
+    type = next;
+    btnImport.setAttribute('aria-pressed', String(next === '2'));
+    btnExport.setAttribute('aria-pressed', String(next === '1'));
+    load();
+  }
+
+  btnImport.addEventListener('click', function () { pick('2'); });
+  btnExport.addEventListener('click', function () { pick('1'); });
+  reload.addEventListener('click', load);
+
+  load();
 })();
 </script>
