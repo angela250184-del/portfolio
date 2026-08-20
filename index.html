@@ -13,10 +13,10 @@
     --accent-2: #C9E0D7;
     --shadow:   0 1px 2px rgba(20, 32, 28, .05), 0 8px 24px -16px rgba(20, 32, 28, .3);
 
-    --serif: Georgia, "Nanum Myeongjo", AppleMyungjo, Batang, serif;
-    --sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
-            "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-    --mono: "JetBrains Mono", Consolas, "D2Coding", ui-monospace, SFMono-Regular, monospace;
+    /* 전체를 맑은 고딕으로 통일한다. 세 갈래는 굵기·자간으로만 구분한다. */
+    --serif: "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+    --sans:  "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+    --mono:  "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
 
     --fs-display: clamp(3.25rem, 11vw, 7rem);
     --fs-h2:      clamp(1.35rem, 2.6vw, 1.75rem);
@@ -168,7 +168,7 @@
   .sec-head h2 {
     font-family: var(--serif);
     font-size: var(--fs-h2);
-    font-weight: 400;
+    font-weight: 700;
     letter-spacing: -.01em;
     margin: 0;
   }
@@ -196,7 +196,7 @@
   .hero h1 {
     font-family: var(--serif);
     font-size: var(--fs-display);
-    font-weight: 400;
+    font-weight: 700;
     line-height: .95;
     letter-spacing: -.03em;
     margin: 0;
@@ -305,7 +305,7 @@
   .work-title {
     font-family: var(--serif);
     font-size: 1.2rem;
-    font-weight: 400;
+    font-weight: 600;
     margin: 0;
     letter-spacing: -.01em;
   }
@@ -432,39 +432,66 @@
     font-variant-numeric: tabular-nums;
   }
 
-  .fx-table { width: 100%; border-collapse: collapse; }
-  .fx-table caption { text-align: left; padding: 0 0 .75rem; color: var(--muted); font-size: var(--fs-small); }
-  .fx-table th {
-    text-align: left;
-    font-family: var(--mono);
-    font-weight: 400;
-    font-size: var(--fs-label);
-    letter-spacing: .16em;
-    text-transform: uppercase;
-    color: var(--faint);
-    padding: 0 0 .6rem;
-    border-bottom: 1px solid var(--line);
+  .fx-caption { margin: 0 0 1rem; color: var(--muted); font-size: var(--fs-small); }
+
+  .fx-grid {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: .85rem;
   }
-  .fx-table th.num, .fx-table td.num { text-align: right; }
-  .fx-table td {
-    padding: .85rem 0;
-    border-bottom: 1px solid var(--line);
-    vertical-align: baseline;
+
+  .fx-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1.1rem 1.15rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: .1rem;
+    transition: border-color .2s ease, transform .2s ease;
   }
-  .fx-code {
-    font-family: var(--mono);
-    font-size: 1rem;
-    letter-spacing: .06em;
+  .fx-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+  .fx-card .code {
+    font-size: .95rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    color: var(--accent);
   }
-  .fx-code small { display: block; font-size: var(--fs-small); letter-spacing: 0; color: var(--muted); }
-  .fx-rate {
-    font-family: var(--mono);
-    font-size: 1.15rem;
+  .fx-card .name {
+    font-size: var(--fs-small);
+    color: var(--muted);
+    margin-bottom: .7rem;
+  }
+  .fx-card .rate {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -.02em;
     font-variant-numeric: tabular-nums;
+    line-height: 1.15;
     white-space: nowrap;
   }
-  .fx-rate span { color: var(--faint); font-size: var(--fs-small); margin-left: .3rem; }
-  .fx-unit { color: var(--muted); font-size: var(--fs-small); }
+  .fx-card .rate em {
+    font-style: normal;
+    font-size: .85rem;
+    font-weight: 400;
+    color: var(--faint);
+    margin-left: .25rem;
+  }
+  .fx-card .unit {
+    margin-top: .45rem;
+    padding-top: .55rem;
+    border-top: 1px solid var(--line);
+    font-size: var(--fs-label);
+    letter-spacing: .06em;
+    color: var(--faint);
+  }
+
+  .fx-card.is-loading { border-style: dashed; }
+  .fx-card.is-loading .rate { color: var(--faint); font-weight: 400; font-size: 1.1rem; }
 
   .fx-msg {
     padding: 1.25rem 0;
@@ -474,11 +501,9 @@
   }
   .fx-msg a { color: var(--accent); }
   .fx-msg[hidden] { display: none; }
-  .fx-skeleton td { color: var(--faint); }
 
   @media (max-width: 34rem) {
     .fx-note { margin-left: 0; width: 100%; }
-    .fx-unit { display: none; }
   }
 
   footer {
@@ -534,7 +559,7 @@
   .overlay[hidden] { display: none; }
   .overlay strong {
     font-family: var(--serif);
-    font-weight: 400;
+    font-weight: 700;
     font-size: 1.4rem;
     letter-spacing: -.01em;
   }
@@ -959,19 +984,15 @@
         <span class="fx-note" id="fxNote">불러오는 중…</span>
       </div>
 
-      <table class="fx-table">
-        <caption>관세청 관세환율 · 1단위당 원화</caption>
-        <thead>
-          <tr>
-            <th scope="col">통화</th>
-            <th scope="col" class="num">환율</th>
-            <th scope="col" class="fx-unit-head">화폐단위</th>
-          </tr>
-        </thead>
-        <tbody id="fxBody">
-          <tr class="fx-skeleton"><td colspan="3">조회하는 중입니다…</td></tr>
-        </tbody>
-      </table>
+      <p class="fx-caption">관세청 관세환율 · 각 통화 1단위당 원화</p>
+
+      <ul class="fx-grid" id="fxGrid">
+        <li class="fx-card is-loading"><span class="code">USD</span><span class="name">미국 달러</span><span class="rate">조회 중…</span></li>
+        <li class="fx-card is-loading"><span class="code">EUR</span><span class="name">유로</span><span class="rate">조회 중…</span></li>
+        <li class="fx-card is-loading"><span class="code">GBP</span><span class="name">영국 파운드</span><span class="rate">조회 중…</span></li>
+        <li class="fx-card is-loading"><span class="code">JPY</span><span class="name">일본 엔</span><span class="rate">조회 중…</span></li>
+        <li class="fx-card is-loading"><span class="code">CNY</span><span class="name">중국 위안</span><span class="rate">조회 중…</span></li>
+      </ul>
 
       <p class="fx-msg" id="fxMsg" hidden></p>
     </section>
@@ -1673,13 +1694,13 @@
     ['CNY', '중국 위안']
   ];
 
-  var body = document.getElementById('fxBody');
+  var grid = document.getElementById('fxGrid');
   var note = document.getElementById('fxNote');
   var msg = document.getElementById('fxMsg');
   var reload = document.getElementById('fxReload');
   var btnImport = document.getElementById('fxImport');
   var btnExport = document.getElementById('fxExport');
-  if (!body) return;
+  if (!grid) return;
 
   var nf = new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 4 });
   var type = '2';
@@ -1695,40 +1716,56 @@
     else { msg.textContent = ''; msg.hidden = true; }
   }
 
+  function card(code, label, rateText, unitText, loading) {
+    var li = document.createElement('li');
+    li.className = 'fx-card' + (loading ? ' is-loading' : '');
+
+    var c = document.createElement('span');
+    c.className = 'code';
+    c.textContent = code;
+
+    var n = document.createElement('span');
+    n.className = 'name';
+    n.textContent = label;
+
+    var r = document.createElement('span');
+    r.className = 'rate';
+    r.appendChild(document.createTextNode(rateText));
+    if (!loading) {
+      var em = document.createElement('em');
+      em.textContent = '원';
+      r.appendChild(em);
+    }
+
+    li.appendChild(c);
+    li.appendChild(n);
+    li.appendChild(r);
+
+    if (unitText) {
+      var u = document.createElement('span');
+      u.className = 'unit';
+      u.textContent = unitText;
+      li.appendChild(u);
+    }
+    return li;
+  }
+
   function render(data) {
     var byCode = {};
     data.rates.forEach(function (r) { byCode[r.currency] = r; });
 
-    body.textContent = '';
+    grid.textContent = '';
     var missing = [];
 
     SHOW.forEach(function (pair) {
       var code = pair[0], label = pair[1];
       var row = byCode[code];
-      if (!row) { missing.push(code); return; }
-
-      var tr = document.createElement('tr');
-
-      var td1 = document.createElement('td');
-      td1.className = 'fx-code';
-      td1.appendChild(document.createTextNode(code));
-      var small = document.createElement('small');
-      small.textContent = label;
-      td1.appendChild(small);
-
-      var td2 = document.createElement('td');
-      td2.className = 'num fx-rate';
-      td2.appendChild(document.createTextNode(nf.format(row.rate)));
-      var won = document.createElement('span');
-      won.textContent = '원';
-      td2.appendChild(won);
-
-      var td3 = document.createElement('td');
-      td3.className = 'fx-unit';
-      td3.textContent = row.unitName;
-
-      tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
-      body.appendChild(tr);
+      if (!row) {
+        missing.push(code);
+        grid.appendChild(card(code, label, '고시 없음', '', true));
+        return;
+      }
+      grid.appendChild(card(code, label, nf.format(row.rate), row.unitName, false));
     });
 
     note.textContent = '적용 ' + prettyDate(data.date) + ' · ' + (type === '1' ? '수출' : '수입');
@@ -1740,14 +1777,10 @@
   }
 
   function showError(text) {
-    body.textContent = '';
-    var tr = document.createElement('tr');
-    var td = document.createElement('td');
-    td.colSpan = 3;
-    td.className = 'fx-msg';
-    td.textContent = '환율을 불러오지 못했습니다.';
-    tr.appendChild(td);
-    body.appendChild(tr);
+    grid.textContent = '';
+    SHOW.forEach(function (pair) {
+      grid.appendChild(card(pair[0], pair[1], '—', '', true));
+    });
     note.textContent = '조회 실패';
     setMessage(text);
   }
