@@ -20,3 +20,10 @@ tmp/
 # Supabase 로컬 상태
 supabase/.temp
 supabase/.branches
+
+# 회사 내부 자료 (절대 커밋 금지)
+excel/
+*.xlsx
+*.XLSX
+*.xls
+*.XLS
