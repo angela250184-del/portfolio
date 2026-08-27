@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /sales.html
+Disallow: /api/

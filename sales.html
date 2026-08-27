@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>매출 조회</title>
+<style>
+  :root {
+    --ground:   #F1F4F2;
+    --surface:  #FFFFFF;
+    --sunk:     #E7ECE9;
+    --ink:      #14201C;
+    --muted:    #5D6B65;
+    --faint:    #8A9691;
+    --line:     #D6DEDA;
+    --accent:   #0F6A56;
+    --minus:    #B4453C;
+    --shadow:   0 1px 2px rgba(20,32,28,.05), 0 12px 32px -24px rgba(20,32,28,.5);
+    --font: "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0D1412; --surface: #141D1A; --sunk: #101815;
+      --ink: #E7EDEA; --muted: #96A39D; --faint: #6D7A75; --line: #253430;
+      --accent: #52CFAC; --minus: #E88176;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px -24px rgba(0,0,0,1);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0D1412; --surface: #141D1A; --sunk: #101815;
+    --ink: #E7EDEA; --muted: #96A39D; --faint: #6D7A75; --line: #253430;
+    --accent: #52CFAC; --minus: #E88176;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px -24px rgba(0,0,0,1);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: var(--font); line-height: 1.6; word-break: keep-all;
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .wrap { max-width: 82rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) 4rem; }
+
+  header.top { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
+  header.top h1 { font-size: clamp(1.25rem, 3vw, 1.6rem); font-weight: 700; letter-spacing: -.02em; margin: 0; }
+  header.top .tag {
+    font-size: .68rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: .12rem .55rem;
+  }
+  header.top .spacer { margin-left: auto; }
+
+  button {
+    font-family: var(--font); cursor: pointer;
+    border: 1px solid var(--line); background: var(--surface); color: var(--muted);
+    border-radius: 999px; padding: .45rem .95rem; font-size: .78rem; letter-spacing: .06em;
+    transition: border-color .2s, color .2s;
+  }
+  button:hover { border-color: var(--accent); color: var(--accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: var(--surface); font-weight: 700; }
+  button.primary:hover { opacity: .9; color: var(--surface); }
+  button[disabled] { opacity: .5; cursor: default; }
+
+  /* 로그인 */
+  .gate { min-height: 80vh; display: grid; place-content: center; padding: 1rem; }
+  .gate form {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+    box-shadow: var(--shadow); padding: clamp(1.75rem, 4vw, 2.5rem); width: min(24rem, 92vw);
+    display: grid; gap: .9rem;
+  }
+  .gate h1 { margin: 0; font-size: 1.15rem; }
+  .gate p { margin: 0; color: var(--muted); font-size: .85rem; }
+  .gate input {
+    font-family: var(--font); font-size: 1rem; padding: .65rem .8rem;
+    border: 1px solid var(--line); border-radius: 5px;
+    background: var(--ground); color: var(--ink); width: 100%;
+  }
+  .err { color: var(--minus); font-size: .82rem; min-height: 1.2em; margin: 0; }
+
+  /* 요약 */
+  .tiles {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: .8rem; margin-bottom: 1.75rem;
+  }
+  .tile {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 1rem 1.1rem;
+  }
+  .tile dt {
+    font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: var(--faint); margin-bottom: .35rem;
+  }
+  .tile dd { margin: 0; font-size: 1.35rem; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .tile dd small { display: block; font-size: .72rem; font-weight: 400; color: var(--muted); letter-spacing: 0; margin-top: .2rem; }
+
+  /* 필터 */
+  .filters { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin-bottom: 1rem; }
+  .filters select, .filters input {
+    font-family: var(--font); font-size: .85rem; padding: .45rem .6rem;
+    border: 1px solid var(--line); border-radius: 5px; background: var(--surface); color: var(--ink);
+  }
+  .filters input[type="search"] { min-width: 14rem; }
+  .filters .count { margin-left: auto; font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* 월별 */
+  h2.sec { font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin: 2rem 0 .7rem; }
+
+  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: .82rem; }
+  th, td { padding: .55rem .7rem; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--line); }
+  thead th {
+    position: sticky; top: 0; background: var(--sunk); color: var(--faint);
+    font-weight: 400; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; z-index: 1;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover td { background: var(--sunk); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.neg { color: var(--minus); }
+  td.wide { white-space: normal; min-width: 16rem; max-width: 26rem; }
+  .bar-cell { min-width: 8rem; }
+  .bar { height: 6px; border-radius: 3px; background: var(--accent); opacity: .75; }
+
+  .detail { max-height: 30rem; overflow-y: auto; }
+  .note { color: var(--muted); font-size: .78rem; margin: .7rem 0 0; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- 로그인 화면 -->
+<section class="gate" id="gate">
+  <form id="loginForm" autocomplete="off">
+    <h1>매출 조회</h1>
+    <p>비밀번호를 입력하세요.</p>
+    <input type="password" id="pw" name="password" placeholder="비밀번호" autocomplete="current-password" required>
+    <button type="submit" class="primary" id="loginBtn">들어가기</button>
+    <p class="err" id="loginErr"></p>
+  </form>
+</section>
+
+<!-- 데이터 화면 -->
+<main class="wrap hidden" id="app">
+  <header class="top">
+    <h1>매출 조회</h1>
+    <span class="tag">Private</span>
+    <span class="spacer"></span>
+    <button type="button" id="csvBtn">CSV 내려받기</button>
+    <button type="button" id="logoutBtn">나가기</button>
+  </header>
+
+  <dl class="tiles" id="tiles"></dl>
+
+  <div class="filters">
+    <select id="fMonth"><option value="">전체 기간</option></select>
+    <select id="fCurrency"><option value="">전체 통화</option></select>
+    <select id="fFile"><option value="">전체 파일</option></select>
+    <input type="search" id="fText" placeholder="고객사 · 자재 · 적요 검색">
+    <span class="count" id="count"></span>
+  </div>
+
+  <h2 class="sec">월별 합계 (전기일 기준)</h2>
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>월</th><th class="num">건수</th><th class="num">현지통화 합계</th><th class="bar-cell">비중</th>
+        </tr>
+      </thead>
+      <tbody id="monthBody"></tbody>
+    </table>
+  </div>
+
+  <h2 class="sec">고객사 상위 10</h2>
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr><th>고객사</th><th class="num">건수</th><th class="num">현지통화 합계</th></tr>
+      </thead>
+      <tbody id="custBody"></tbody>
+    </table>
+  </div>
+
+  <h2 class="sec">상세 내역</h2>
+  <div class="scroll detail">
+    <table>
+      <thead>
+        <tr>
+          <th>전기일</th><th>전표</th><th>유형</th><th>계정</th>
+          <th>고객사</th><th>자재</th>
+          <th class="num">수량</th><th class="num">현지통화</th>
+          <th class="num">문서통화</th><th>통화</th><th>적요</th>
+        </tr>
+      </thead>
+      <tbody id="rowBody"></tbody>
+    </table>
+  </div>
+  <p class="note" id="limitNote"></p>
+</main>
+
+<script>
+(function () {
+  var gate = document.getElementById('gate');
+  var app = document.getElementById('app');
+  var form = document.getElementById('loginForm');
+  var pw = document.getElementById('pw');
+  var loginBtn = document.getElementById('loginBtn');
+  var loginErr = document.getElementById('loginErr');
+
+  var nf0 = new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 0 });
+  var nf2 = new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 2 });
+
+  var ALL = [];
+  var MAX_ROWS = 800; // 화면에 그리는 최대 줄 수
+
+  /* ── 로그인 ─────────────────────────────── */
+  function showApp() { gate.classList.add('hidden'); app.classList.remove('hidden'); }
+  function showGate() { app.classList.add('hidden'); gate.classList.remove('hidden'); pw.value = ''; }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    loginErr.textContent = '';
+    loginBtn.disabled = true;
+    fetch('/api/sales-auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw.value })
+    })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (res) {
+        if (!res.ok) throw new Error(res.d.error || '로그인에 실패했습니다.');
+        pw.value = '';
+        showApp();
+        return load();
+      })
+      .catch(function (err) { loginErr.textContent = err.message; })
+      .finally(function () { loginBtn.disabled = false; });
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', function () {
+    fetch('/api/sales-auth?logout=1', { method: 'POST' }).finally(function () {
+      ALL = [];
+      showGate();
+    });
+  });
+
+  /* ── 데이터 ─────────────────────────────── */
+  function load() {
+    return fetch('/api/sales', { headers: { Accept: 'application/json' } })
+      .then(function (r) {
+        if (r.status === 401) { showGate(); throw new Error('다시 로그인해 주세요.'); }
+        if (!r.ok) throw new Error('데이터를 불러오지 못했습니다.');
+        return r.json();
+      })
+      .then(function (data) {
+        ALL = data.rows || [];
+        buildFilters();
+        render();
+      })
+      .catch(function (e) { loginErr.textContent = e.message; });
+  }
+
+  function uniq(list) {
+    var s = new Set();
+    list.forEach(function (v) { if (v) s.add(v); });
+    return [...s].sort();
+  }
+
+  function buildFilters() {
+    fill('fMonth', uniq(ALL.map(function (r) { return (r.posting_date || '').slice(0, 7); })), '전체 기간');
+    fill('fCurrency', uniq(ALL.map(function (r) { return r.document_currency; })), '전체 통화');
+    fill('fFile', uniq(ALL.map(function (r) { return r.source_file; })), '전체 파일');
+  }
+
+  function fill(id, values, allLabel) {
+    var sel = document.getElementById(id);
+    sel.textContent = '';
+    var o = document.createElement('option');
+    o.value = ''; o.textContent = allLabel;
+    sel.appendChild(o);
+    values.forEach(function (v) {
+      var op = document.createElement('option');
+      op.value = v; op.textContent = v;
+      sel.appendChild(op);
+    });
+  }
+
+  function filtered() {
+    var m = document.getElementById('fMonth').value;
+    var c = document.getElementById('fCurrency').value;
+    var f = document.getElementById('fFile').value;
+    var q = document.getElementById('fText').value.trim().toLowerCase();
+
+    return ALL.filter(function (r) {
+      if (m && (r.posting_date || '').slice(0, 7) !== m) return false;
+      if (c && r.document_currency !== c) return false;
+      if (f && r.source_file !== f) return false;
+      if (q) {
+        var hay = [r.customer_name, r.customer_code, r.material, r.item_text, r.document_number, r.reference]
+          .filter(Boolean).join(' ').toLowerCase();
+        if (hay.indexOf(q) < 0) return false;
+      }
+      return true;
+    });
+  }
+
+  function td(text, cls) {
+    var el = document.createElement('td');
+    if (cls) el.className = cls;
+    el.textContent = text == null || text === '' ? '—' : String(text);
+    return el;
+  }
+
+  function money(v) {
+    var n = Number(v || 0);
+    return { text: nf2.format(n), neg: n < 0 };
+  }
+
+  function render() {
+    var rows = filtered();
+
+    // 요약 타일
+    var sum = rows.reduce(function (a, r) { return a + Number(r.amount_local || 0); }, 0);
+    var custs = new Set(rows.map(function (r) { return r.customer_name; }).filter(Boolean));
+    var dates = rows.map(function (r) { return r.posting_date; }).filter(Boolean).sort();
+
+    var tiles = [
+      ['건수', nf0.format(rows.length) + ' 건', ''],
+      ['현지통화 합계', nf0.format(sum), 'KRW'],
+      ['고객사', nf0.format(custs.size) + ' 곳', ''],
+      ['전기일 범위', dates.length ? dates[0] : '—', dates.length ? '~ ' + dates[dates.length - 1] : '']
+    ];
+    var dl = document.getElementById('tiles');
+    dl.textContent = '';
+    tiles.forEach(function (t) {
+      var wrap = document.createElement('div');
+      wrap.className = 'tile';
+      var dt = document.createElement('dt'); dt.textContent = t[0];
+      var dd = document.createElement('dd'); dd.textContent = t[1];
+      if (t[2]) { var s = document.createElement('small'); s.textContent = t[2]; dd.appendChild(s); }
+      wrap.appendChild(dt); wrap.appendChild(dd);
+      dl.appendChild(wrap);
+    });
+
+    document.getElementById('count').textContent =
+      nf0.format(rows.length) + ' / ' + nf0.format(ALL.length) + ' 건';
+
+    // 월별
+    var byMonth = new Map();
+    rows.forEach(function (r) {
+      var m = (r.posting_date || '').slice(0, 7);
+      if (!m) return;
+      var g = byMonth.get(m) || { n: 0, sum: 0 };
+      g.n++; g.sum += Number(r.amount_local || 0);
+      byMonth.set(m, g);
+    });
+    var maxAbs = Math.max(1, ...[...byMonth.values()].map(function (g) { return Math.abs(g.sum); }));
+    var mb = document.getElementById('monthBody');
+    mb.textContent = '';
+    [...byMonth.keys()].sort().forEach(function (m) {
+      var g = byMonth.get(m);
+      var tr = document.createElement('tr');
+      tr.appendChild(td(m));
+      tr.appendChild(td(nf0.format(g.n), 'num'));
+      var mv = money(g.sum);
+      tr.appendChild(td(mv.text, 'num' + (mv.neg ? ' neg' : '')));
+      var cell = document.createElement('td');
+      cell.className = 'bar-cell';
+      var bar = document.createElement('div');
+      bar.className = 'bar';
+      bar.style.width = Math.round((Math.abs(g.sum) / maxAbs) * 100) + '%';
+      cell.appendChild(bar);
+      tr.appendChild(cell);
+      mb.appendChild(tr);
+    });
+
+    // 고객사 상위 10
+    var byCust = new Map();
+    rows.forEach(function (r) {
+      var k = r.customer_name || '(고객 없음)';
+      var g = byCust.get(k) || { n: 0, sum: 0 };
+      g.n++; g.sum += Number(r.amount_local || 0);
+      byCust.set(k, g);
+    });
+    var cb = document.getElementById('custBody');
+    cb.textContent = '';
+    [...byCust.entries()]
+      .sort(function (a, b) { return Math.abs(b[1].sum) - Math.abs(a[1].sum); })
+      .slice(0, 10)
+      .forEach(function (e) {
+        var tr = document.createElement('tr');
+        tr.appendChild(td(e[0], 'wide'));
+        tr.appendChild(td(nf0.format(e[1].n), 'num'));
+        var mv = money(e[1].sum);
+        tr.appendChild(td(mv.text, 'num' + (mv.neg ? ' neg' : '')));
+        cb.appendChild(tr);
+      });
+
+    // 상세
+    var rb = document.getElementById('rowBody');
+    rb.textContent = '';
+    rows.slice(0, MAX_ROWS).forEach(function (r) {
+      var tr = document.createElement('tr');
+      tr.appendChild(td(r.posting_date));
+      tr.appendChild(td(r.document_number));
+      tr.appendChild(td(r.document_type));
+      tr.appendChild(td(r.gl_account));
+      tr.appendChild(td(r.customer_name, 'wide'));
+      tr.appendChild(td(r.material));
+      tr.appendChild(td(r.quantity == null ? '' : nf0.format(r.quantity), 'num'));
+      var a = money(r.amount_local);
+      tr.appendChild(td(a.text, 'num' + (a.neg ? ' neg' : '')));
+      var b = money(r.amount_doc);
+      tr.appendChild(td(b.text, 'num' + (b.neg ? ' neg' : '')));
+      tr.appendChild(td(r.document_currency));
+      tr.appendChild(td(r.item_text, 'wide'));
+      rb.appendChild(tr);
+    });
+
+    document.getElementById('limitNote').textContent =
+      rows.length > MAX_ROWS
+        ? '화면에는 ' + nf0.format(MAX_ROWS) + '줄만 표시합니다. 전체는 CSV로 내려받으세요.'
+        : '';
+  }
+
+  ['fMonth', 'fCurrency', 'fFile'].forEach(function (id) {
+    document.getElementById(id).addEventListener('change', render);
+  });
+  var t;
+  document.getElementById('fText').addEventListener('input', function () {
+    clearTimeout(t); t = setTimeout(render, 200);
+  });
+
+  /* ── CSV ────────────────────────────────── */
+  document.getElementById('csvBtn').addEventListener('click', function () {
+    var rows = filtered();
+    if (!rows.length) return;
+    var cols = Object.keys(rows[0]);
+    var esc = function (v) {
+      if (v == null) return '';
+      var s = String(v);
+      return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    };
+    var csv = '﻿' + cols.join(',') + '\n' +
+      rows.map(function (r) { return cols.map(function (c) { return esc(r[c]); }).join(','); }).join('\n');
+    var url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = '매출_' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  });
+
+  /* ── 시작 ───────────────────────────────── */
+  fetch('/api/sales-auth')
+    .then(function (r) { return r.json(); })
+    .then(function (d) { if (d.authorized) { showApp(); load(); } })
+    .catch(function () { /* 로그인 화면 유지 */ });
+})();
+</script>
+</body>
+</html>
